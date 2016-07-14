@@ -1,2 +1,2 @@
-# agentspeak-py
+# AgentSpeak(Py)
 AgentSpeak(L) Interpreter
