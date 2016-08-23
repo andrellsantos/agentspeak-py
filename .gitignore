@@ -1,3 +1,9 @@
 # Python
 *.py~
 *.pyc
+
+# Java
+*.java~
+
+# Jason
+*.stop___MAS
