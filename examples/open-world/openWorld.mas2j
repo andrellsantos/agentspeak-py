@@ -1,0 +1,9 @@
+MAS openWorld {
+
+    environment: 
+        OpenWorldEnv
+    
+    agents:
+        openWorld #3;
+
+}
