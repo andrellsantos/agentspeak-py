@@ -1,5 +1,14 @@
-def __init__(self):
-	pass;
+import agentspeak
 
-def __repr__(self):
-	pass;
+class Agent:
+
+    def __init__(self):
+        pass
+
+    
+    def run():
+        pass
+    
+    
+    def __repr__(self):
+        pass
