@@ -8,5 +8,5 @@ class Environment:
     def execute(self, action):
         pass
 
-    def __repr__(self):
+    def __str__(self):
         pass

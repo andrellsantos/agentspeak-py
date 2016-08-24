@@ -1,0 +1,5 @@
+Bakery:
+    environment: Bakery.
+
+    agents: boss; baker.
+}

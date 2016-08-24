@@ -2,13 +2,14 @@ import agentspeak
 
 class Agent:
 
-    def __init__(self):
+    def __init__(self, beliefs, goals, plans):
+        self.beliefs = beliefs
+        self.goals = goals
+        self.plans = plans
+    
+    def run(self):
         pass
-
-    
-    def run():
-        pass
     
     
-    def __repr__(self):
+    def __str__(self):
         pass

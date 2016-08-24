@@ -1,7 +1,0 @@
-/* Jason Project */
-
-MAS helloWorld {
-    infrastructure: Centralised
-	
-    agents: helloWorld;
-}

@@ -1,16 +1,36 @@
-class Action:
-
-    def __init__(self):
-        pass
-
-    def __repr__(self):
-        pass
-
+class Term(object):
+    pass
     
-class Belief:
+class Belief(object):
+    pass
+    
+class Goal(object):
+    pass
+    
+class AchievmentGoal(Goal):
+    pass
 
-    def __init__(self):
+class TestGoal(Goal):
+    pass
+    
+class Action(object):
+    pass
+    
+class TriggeringEvent(object):
+    pass
+
+# Belief Literals
+class Context(object):
+    pass
+
+# Can be goals or actions
+class Body(object):
+    pass
+    
+class Plan(object):
+
+    def __init__(self, triggering_event, context, body):
         pass
 
-    def __repr__(self):
+    def __str__(self):
         pass

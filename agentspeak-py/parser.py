@@ -3,5 +3,5 @@ class Parser:
     def __init__(self):
         pass
 
-    def __repr__(self):
+    def __str__(self):
         pass

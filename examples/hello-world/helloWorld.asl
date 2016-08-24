@@ -1,4 +1,4 @@
-// Agent helloWorld in project helloWorld.mas2j
+/* Agent helloWorld in project helloWorld.aslpy */
 
 /* Initial beliefs and rules */
 
