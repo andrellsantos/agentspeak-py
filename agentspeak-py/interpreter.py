@@ -47,7 +47,7 @@ def run():
         
         # Envia as mensagens para os agentes
     
-        print 'Ciclo:', tick
+        print('Ciclo: %s' % tick)
         
         # Incrementa o contador com os cliclos de interpretação
         tick += 1
