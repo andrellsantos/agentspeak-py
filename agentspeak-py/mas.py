@@ -1,4 +1,4 @@
-class Project:
+class Mas:
 
     def __init__(self, file_name):
         self.project_file = open(file_name, 'r');

@@ -12,8 +12,8 @@ A Prometheus specification is available in the doc folder.
 
 */
 
-Room:
-    environment: RoomEnv.
+Room(RoomMas):
+    environment = RoomEnv
    
-    agents: porter; claustrophobe; paranoid.
+    agents = [porter, claustrophobe, paranoid]
 

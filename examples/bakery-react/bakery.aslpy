@@ -1,8 +1,0 @@
-/* Jason Project */
-
-Bakery:
-    environment: Bakery.
-
-    agents:
-    boss;
-    baker.
