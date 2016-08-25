@@ -11,17 +11,17 @@
 from agent import *
 from agentspeak import *
 from environment import *
-from project import *
+from mas import *
 
 class Interpreter(object):
 
     def __init__(self):
         # Carrega as informações do projeto
-        project = Project('/home/andre/Development/Python/agentspeak-py/examples/hello-world/helloWorld.aslpy')
-#        project = Project('/home/andre/Development/Python/agentspeak-py/examples/open-world/openWorld.aslpy')
+        mas = Mas('/home/andre/Development/Python/agentspeak-py/examples/hello-world/helloWorld.maspy')
+#        mas = Mas('/home/andre/Development/Python/agentspeak-py/examples/open-world/openWorld.maspy')
                 
         # Define a lista dos agentes
-        self.agents = project.agents
+        self.agents = mas.agents
 
         # Embaralha os agentes 
         # [TO-DO] Quem possui a responsabilidade de definir as prioridades dos agentes?
@@ -29,10 +29,10 @@ class Interpreter(object):
         #         desejar modificar a forma que são ordenados os agentes.
 
         # Define o ambiente
-        self.environment = project.environment
+        self.environment = mas.environment
         
         # Remove o projeto após carregar todos os agentes e o ambiente
-        del project
+        del mas
         
     def run(self):
         # Contador com os cilos de interpretação

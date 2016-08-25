@@ -1,6 +1,0 @@
-openWorld:
-    environment: 
-        OpenWorldEnv.
-    
-    agents:
-        openWorld.
