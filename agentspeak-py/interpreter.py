@@ -12,27 +12,33 @@ from agent import *
 from agentspeak import *
 from environment import *
 from mas import *
+from project import *
 
-class Interpreter(object):
+class Interpreter:
 
     def __init__(self):
         # Carrega as informações do projeto
-        mas = Mas('/home/andre/Development/Python/agentspeak-py/examples/hello-world/helloWorld.maspy')
+        project = Project('/home/andre/Development/Python/agentspeak-py/examples/hello-world/helloWorld.maspy')
 #        mas = Mas('/home/andre/Development/Python/agentspeak-py/examples/open-world/openWorld.maspy')
-                
+    
         # Define a lista dos agentes
-        self.agents = mas.agents
-
+        self.agents = project.agents
+        
         # Embaralha os agentes 
         # [TO-DO] Quem possui a responsabilidade de definir as prioridades dos agentes?
         #         Criar classe com método base para ser sobrescrito quando o usuário
         #         desejar modificar a forma que são ordenados os agentes.
-
+        # [FAIL] Eu não posso fazer assim... eu preciso carregar a classe informada no
+        #        projeto (que deverá ser herdade de Mas) ou instanciar diretamente da
+        #        classe Mas.
+        mas = Mas(self.agents)
+        self.agents = mas.sort()
+        
         # Define o ambiente
-        self.environment = mas.environment
+        self.environment = project.environment
         
         # Remove o projeto após carregar todos os agentes e o ambiente
-        del mas
+        del project
         
     def run(self):
         # Contador com os cilos de interpretação
