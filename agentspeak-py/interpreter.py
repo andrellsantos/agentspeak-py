@@ -19,7 +19,7 @@ class Interpreter:
     def __init__(self):
         # Carrega as informações do projeto
         project = Project('/home/andre/Development/Python/agentspeak-py/examples/hello-world/helloWorld.maspy')
-#        mas = Mas('/home/andre/Development/Python/agentspeak-py/examples/open-world/openWorld.maspy')
+        #mas = Mas('/home/andre/Development/Python/agentspeak-py/examples/open-world/openWorld.maspy')
     
         # Define a lista dos agentes
         self.agents = project.agents
@@ -35,10 +35,10 @@ class Interpreter:
         self.agents = mas.sort()
         
         # Define o ambiente
-        self.environment = project.environment
+        self.environment = mas.environment
         
         # Remove o projeto após carregar todos os agentes e o ambiente
-        del project
+        del mas
         
     def run(self):
         # Contador com os cilos de interpretação
