@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import agentspeak
 
 class Agent:
@@ -8,7 +11,7 @@ class Agent:
         self.plans = plans
     
     def run(self):
-        pass
+        print('Executando ciclo de raciocínio do agente...')
     
     
     def __str__(self):

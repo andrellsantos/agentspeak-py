@@ -18,9 +18,9 @@ class Interpreter:
 
     def __init__(self):
         # Carrega as informações do projeto
-        project = Project('/home/andre/Development/Python/agentspeak-py/examples/hello-world/helloWorld.maspy')
-        #mas = Mas('/home/andre/Development/Python/agentspeak-py/examples/open-world/openWorld.maspy')
-    
+        project = Project('/home/andre/Development/Python/agentspeak-py/examples/generic/generic.maspy')
+        #project = Project('/home/PORTOALEGRE/13108260/DriveH/TCC/agentspeak-py/examples/generic/generic.maspy')
+        
         # Define a lista dos agentes
         self.agents = project.agents
         
@@ -32,20 +32,19 @@ class Interpreter:
         #        projeto (que deverá ser herdade de Mas) ou instanciar diretamente da
         #        classe Mas.
         mas = Mas(self.agents)
-        self.agents = mas.sort()
+        mas.sort()
+        self.agents = mas.agents
         
         # Define o ambiente
-        self.environment = mas.environment
+        self.environment = project.environment
         
-        # Remove o projeto após carregar todos os agentes e o ambiente
-        del mas
         
     def run(self):
         # Contador com os cilos de interpretação
         tick = 0
 
         # Variável de controle para parar as iterações e finalizar o interpretador
-        wantFinish = False
+        wantFinish = True
 
         # Pilha de ações provenientes do raciocínio dos agentes
         actions = []
@@ -53,14 +52,14 @@ class Interpreter:
         # Realiza as iterações enquanto que o usuário permitir
         while not wantFinish:
             # Atualiza as percepções de todos os agentes
-
+    
             # Executa o ciclo de raciocínio dos agentes na
             for agent in self.agents:
                 actions.append(agent.run())
 
             # Executa a pilha de ações 
             for action in actions:
-                environment.execute(action)
+                self.environment.execute(action)
 
             # Envia as mensagens para os agentes
 

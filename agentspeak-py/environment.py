@@ -1,4 +1,7 @@
-import agentspeak
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+from agentspeak import *
 
 class Environment:
 
@@ -6,7 +9,7 @@ class Environment:
         pass
     
     def execute(self, action):
-        pass
+        print('Executando ação no ambiente...')
 
     def __str__(self):
         pass
