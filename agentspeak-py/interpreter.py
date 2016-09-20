@@ -11,63 +11,53 @@
 from agent import *
 from agentspeak import *
 from environment import *
-from mas import *
 from project import *
 
 class Interpreter:
-
     def __init__(self):
         # Carrega as informações do projeto
-        project = Project('/home/andre/Development/Python/agentspeak-py/examples/generic/generic.maspy')
-        #project = Project('/home/PORTOALEGRE/13108260/DriveH/TCC/agentspeak-py/examples/generic/generic.maspy')
+        # project = Project('/home/andre/Development/Python/agentspeak-py/examples/generic/generic.maspy')
+        project = Project('/home/andre/Development/Python/agentspeak-py/examples/hello-world/helloWorld.maspy')
+        # project = Project('/home/PORTOALEGRE/13108260/DriveH/TCC/agentspeak-py/examples/generic/generic.maspy')
         
         # Define a lista dos agentes
-        self.agents = project.agents
-        
-        # Embaralha os agentes 
-        # [TO-DO] Quem possui a responsabilidade de definir as prioridades dos agentes?
-        #         Criar classe com método base para ser sobrescrito quando o usuário
-        #         desejar modificar a forma que são ordenados os agentes.
-        # [FAIL] Eu não posso fazer assim... eu preciso carregar a classe informada no
-        #        projeto (que deverá ser herdade de Mas) ou instanciar diretamente da
-        #        classe Mas.
-        mas = Mas(self.agents)
-        mas.sort()
-        self.agents = mas.agents
-        
+        self.agents = project.agents        
         # Define o ambiente
-        self.environment = project.environment
-        
-        
+        self.environment = project.environment        
+                
     def run(self):
+        # Número de agentes
+        print('Iniciando a execução do interpretador para %i agente(s).' % len(self.agents))
         # Contador com os cilos de interpretação
         tick = 0
-
         # Variável de controle para parar as iterações e finalizar o interpretador
-        wantFinish = True
-
-        # Pilha de ações provenientes do raciocínio dos agentes
-        actions = []
-
+        wantFinish = False
         # Realiza as iterações enquanto que o usuário permitir
         while not wantFinish:
+            # Pilha de ações provenientes do raciocínio dos agentes
+            actions = []        
             # Atualiza as percepções de todos os agentes
     
             # Executa o ciclo de raciocínio dos agentes na
             for agent in self.agents:
-                actions.append(agent.run())
+                action = agent.run()
+                if action:
+                    actions.append(action)
 
-            # Executa a pilha de ações 
-            for action in actions:
-                self.environment.execute(action)
+            # Executa a pilha de ações
+            if actions:
+                for action in actions:
+                    self.environment.execute(action)
 
-            # Envia as mensagens para os agentes
+                # Envia as mensagens para os agentes
+
+            else:
+                wantFinish = True
 
             # Incrementa o contador com os cliclos de interpretação
             tick += 1
 
-            if tick > 30:
-                wantFinish = True
+        print('Execução do interpretador finalizada após %i ciclos.' % tick)
         
         
 if __name__ == '__main__':

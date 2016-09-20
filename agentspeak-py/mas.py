@@ -1,11 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import random
+
 class Mas:
-
-    def __init__(self, agents):
-        self.agents = agents
-
-    def sort(self):
-		# self.agents.sort()
+    def __init__(self):
         pass
+
+    def getKey(item):
+        return item.name
+
+    def sort(self, agents):
+        # Mantem na ordem do arquivo maspy
+        pass
+        # Embaralha os agentes
+		#random.shuffle(agents)
+        # Ordena os agentes
+        # [TO-DO] https://wiki.python.org/moin/HowTo/Sorting

@@ -20,4 +20,4 @@ generic(GenericMas):
     environment = GenericEnv
 
     // List of agents
-    agents = [generic] // Use ',' when you need multiple agents
+    agents = [generic, generic1, generic2] // Use ',' when you need multiple agents

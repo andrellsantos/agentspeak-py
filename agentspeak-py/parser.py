@@ -2,59 +2,126 @@
 # -*- coding: utf-8 -*-
 
 import re
+import os
 from agent import *
 from agentspeak import *
 
 class Parser:
-
-    def __init__(self, file_name):
+    def __init__(self, agent_name, file_name):
         agent_file = open(file_name, 'r');
-        self.__load(agent_file.read())
+        self.__load(agent_name, agent_file.read())
         agent_file.close()
 
-    def __load(self, agent_content):
+    def __load(self, agent_name, agent_content):
         # [FERRAMENTA] https://regex101.com/#python
         # Remove o que está entre /* e */
-        agent_content = re.sub('/\*.*\*/', '', agent_content, re.S)
+        regex_multiple_comments = '/\*.*\*/'
+        agent_content = re.sub(regex_multiple_comments, '', agent_content, re.S)
         # Remove o que está após //
-        agent_content = re.sub('//.*', '', agent_content)
+        regex_comments = '//.*'
+        agent_content = re.sub(regex_comments, '', agent_content)
         # Remove os espaços em branco
         # [FAIL] Não posso por causa das string dentro do .print ou .send
         # agent_content = re.sub(' ', '', agent_content)
 
         # Crenças
-        # [belief(terms)]
-        # (^[~]?\w*\(.*\))\.\s*$
-        # [belief][(terms)]
-        # ^([~]?\w*)\((.*)\)\.\s*$
-        beliefs = []
-        beliefs_content = re.findall('(^[~]?\w*\(.*\))\.\s*$', agent_content, re.M)
-        for belief_content in beliefs_content:
-            beliefs.append(belief_content)
-            #print(belief_content)
-
+        beliefs = self.__beliefs(agent_content)
         # Objetivos
-        # [prefix goal(terms)]
-        # ^([\!\?].*)\.\s*$
-        # [prefix] [goal][(terms)]
-        # ^([\!\?])([~]?\w*)\(?([\w,]*)\)?\.\s*$
-        goals = []
-        goals_content = re.findall('^([\!\?].*)\.\s*$', agent_content, re.M)
-        for goal_content in goals_content:
-            goals.append(goal_content)
-            #print(goal_content)
-        
+        goals = self.__goals(agent_content)        
         # Planos
-        # [prefix] [event(terms)] : [context] <- [body]
-        # ^([+-])(.*)\s*:\s*(.*)\s*<-\s*(.*)\s*\.\s*$
-        # [prefix] event[(terms)] : [context] <- [body]
-        # ^([+-])([\!]?)([~]?\w*)\(?([\w,]*)\)?(.*)\s*:\s*(.*)\s*<-\s*(.*)\s*\.\s*$
+        plans = self.__plans(agent_content)		
+        # Agente
+        self.agent = Agent(agent_name, beliefs, goals, plans)
+
+    # Crenças
+    def __beliefs(self, agent_content):
+        beliefs = []
+        # [belief(terms)]
+        # regex_beliefs = '(^[~]?\w*\(.*\))\.\s*$'
+        # [belief][(terms)]
+        regex_beliefs = '^([~]?\w*)\((.*)\)\.\s*$'
+        beliefs_content = re.findall(regex_beliefs, agent_content, re.M)
+        for belief_content in beliefs_content:
+            predicate = Predicate(belief_content[0].strip())
+            term = Term(belief_content[1].strip())
+            # Crença
+            belief = Belief(predicate, term)
+            # Adiciona a crença na lista de crenças        
+            beliefs.append(belief)
+
+        return beliefs
+
+    # Objetivos
+    def __goals(self, agent_content):
+        goals = []
+        # [prefix goal(terms)]
+        # regex_goals = '^([\!\?].*)\.\s*$'
+        # [prefix] [goal][(terms)]
+        regex_goals = '^([\!\?])([~]?\w*)\(?([\w,]*)\)?\.\s*$'
+        goals_content = re.findall(regex_goals, agent_content, re.M)
+        for goal_content in goals_content:
+            # Objetivo de realização
+            if goal_content[0] == '!':
+                predicate = Predicate(goal_content[1].strip())
+                term = None
+                if goal_content[2].strip():
+                    term = Term(goal_content[2].strip())
+                # Objetivo de realização
+                goal = AchievmentGoal(predicate, term)
+            # Objetivo de teste
+            else:
+                predicate = Predicate(goal_content[1].strip())
+                term = None
+                if goal_content[2].strip():
+                    term = Term(goal_content[2].strip())
+                # Objetivo de teste
+                goal = TestGoal(predicate, term)
+            # Adiciona o objetivo na lista de objetivos
+            goals.append(goal)
+
+        return goals
+    
+    # Planos
+    def __plans(self, agent_content):
         plans = []
-        plans_content = re.findall('^([+-])(.*)\s*:\s*(.*)\s*<-\s*(.*)\s*\.\s*$', agent_content, re.M)
+        # [prefix] [event(terms)] : [context] <- [body]
+        # regex_plans = '^([+-])(.*)\s*:\s*(.*)\s*<-\s*(.*)\s*\.\s*$'
+        # [prefix] event[(terms)] : [context] <- [body]
+        regex_plans = '^([+-])([\!]?)([~]?\w*)\(?([\w,]*)\)?(.*)\s*:\s*(.*)\s*<-\s*(.*)\s*\.\s*$'
+        plans_content = re.findall(regex_plans, agent_content, re.M)
         for plan_content in plans_content:
-            plans.append(plan_content)
-            #print(plan_content)
-        
-		
-        # Cria o Agente
-        self.agent = Agent(beliefs, goals, plans)
+            type = plan_content[0].strip()            
+            # Evento ativador
+            # Objetivo de realização
+            if plan_content[1] == '!':
+                predicate = Predicate(plan_content[2].strip())
+                term = None
+                if plan_content[3].strip():
+                    term = Term(plan_content[3].strip())
+                # Evento ativador
+                triggering_event = AchievmentGoal(predicate, term)
+            # Objetivo de teste
+            elif plan_content[1] == '?':
+                predicate = Predicate(plan_content[2].strip())
+                term = None
+                if plan_content[3].strip():
+                    term = Term(plan_content[3].strip())
+                # Evento ativador
+                triggering_event = TestGoal(predicate, term)
+            # Crença
+            else:
+                predicate = Predicate(plan_content[2].strip())
+                term = Term(plan_content[3].strip())
+                # Evento ativador
+                triggering_event = Belief(predicate, term)
+
+            # Contexto
+            context = plan_content[5]
+            # Corpo
+            body = plan_content[6]
+            # Plano
+            plan = Plan(type, triggering_event, context, body)
+            # Adiciona o plano na lista de planos
+            plans.append(plan)
+
+        return plans
