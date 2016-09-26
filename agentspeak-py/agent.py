@@ -1,61 +1,102 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
-import agentspeak
+import copy
+from agentspeak import *
 
 class Agent:
     def __init__(self, name, belief_base, initial_goals, plan_library):
         self.name = name
         self.__belief_base = belief_base
-        self.__initial_goals = initial_goals
+        self.__initial_goals = initial_goals        
+        # Conjunto de planos P
         self.__plan_library = plan_library
 
-        self.__events = []
+        # Os objetivos iniciais do agente são adicionado ao conjunto de eventos
+        self.__events = copy.copy(initial_goals)
         self.__intentions = []
     
-    def run(self, perceptions = None):
-        print('Executando ciclo de raciocínio do agente %s...' % self.name)
+    def run(self, perceptions = []):
+        # print('Executando ciclo de raciocínio do agente %s...' % self.name)
         
         # Função de revisão de crenças (BRF)
         self.__beliefRevisionFunction(perceptions)
-        # Escolhe um único evento do conjunto de eventos E
+        # Se não possuir nenhum elemento no conjunto de eventos ou conjunto de planos
+        if not self.__events and self.__plan_library:
+            return None
+        # Função de seleção de evento
         event = self.__eventSelection()
-        # Encontra os planos relevantes
+        # Função de unificação para seleção dos planos relevantes
         relevant_plans = self.__unifyEvent(event)
-        # Encontra os planos aplicáveis a partir dos planos relevantes
+        # Se nenhum plano relevante for selecionado
+        if not relevant_plans:
+            return None
+        # Função de substituição para seleção dos planos relevantes
         applicable_plans = self.__unifyContext(relevant_plans)
-        # Opta pelo plano pretendido
+        # Se nenhum plano aplicável for selecionado
+        if not applicable_plans:
+            return None            
+        # Função de seleção do plano pretendido
         intended_mean = self.__intendedMeansSelection(applicable_plans)
-        # Atualiza o conjunto de intenções I
+        # Função de atualização do conjunto de intenções
         self.__updateIntentions(intended_mean)
-        # Seleciona a intenção para ser executada
-        intention = __intentionSelection()
-
+        # Função de selecão da intenção que será executada
+        intention = self.__intentionSelection() 
+        # Retorna a intenção que será executada no ambiente
         return intention
 
+    # Função de revisão de crenças (BRF)
     def __beliefRevisionFunction(self, perceptions):
-        pass
+        # Recebe as informações provenientes do ambiente e as confronta com o seu conjunto de crenças
+        for perception in perceptions:
+            # Caso as percepções do ambiente sejam diferentes, o conjunto de crenças é atualizado para que
+            # reflitam o novo estado do ambiente
 
+            # Cada crença modificada gera um novo evento que é adicionado no conjunto de eventos
+            pass
+
+    # Função de seleção de evento
     def __eventSelection(self):
-        # Remove e retorna o primeiro elemento da lista
-        return self.__events.pop()
+        # Escolhe um único evento do conjunto de eventos
+        # pop() - Remove e retorna o primeiro elemento da lista
+        event = self.__events.pop()
+        return event
 
+    # Função de unificação para seleção dos planos relevantes
     def __unifyEvent(self, event):
-        return None
+        # Encontra os planos relevantes unificando os eventos ativadores com os cabeçalhos do conjunto de planos
+        relevant_plans = []
+        for plan in self.__plan_library:
+            if str(event) == str(plan.triggering_event):
+                relevant_plans.append(plan)
 
+        return relevant_plans
+
+    # Função de substituição para seleção dos planos relevantes
     def __unifyContext(self, relevant_plans):
-        return None
+        applicable_plans = []
+        for plan in relevant_plans:
+            if str(plan.context) == 'true':
+                applicable_plans.append(plan)
 
+        return applicable_plans
+
+    # Função de seleção do plano pretendido
     def __intendedMeansSelection(self, applicable_plans):
-        # Remove e retorna o primeiro elemento da lista
-        return applicable_plans.left()
+        # Escolhe um único plano aplicável do conjunto de planos aplicáveis
+        # pop() - Remove e retorna o primeiro elemento da lista
+        applicable_plan = applicable_plans.pop()
+        return applicable_plan
 
     def __updateIntentions(self, intended_mean):
-       pass 
+        intention = intended_mean.body
+        self.__intentions.append(intention)
 
+    # Função de selecão da intenção que será executada
     def __intentionSelection(self):
-        # Remove e retorna o primeiro elemento da lista
-        return self.__intentions.pop()
+        # Escolhe uma única intenção do conjunto de intenções
+        # pop() - Remove e retorna o primeiro elemento da lista
+        intention = self.__intentions.pop()
+        return intention
         
     def __str__(self):
         beliefs = "\n".join(str(belief) for belief in self.__belief_base)

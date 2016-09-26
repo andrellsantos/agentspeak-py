@@ -27,7 +27,7 @@ class Interpreter:
                 
     def run(self):
         # Número de agentes
-        print('Iniciando a execução do interpretador para %i agente(s).' % len(self.agents))
+        # print('Iniciando a execução do interpretador para %i agente(s).' % len(self.agents))
         # Contador com os cilos de interpretação
         tick = 0
         # Variável de controle para parar as iterações e finalizar o interpretador
@@ -37,14 +37,16 @@ class Interpreter:
             # Pilha de ações provenientes do raciocínio dos agentes
             actions = []        
             # Atualiza as percepções de todos os agentes
-    
-            # Executa o ciclo de raciocínio dos agentes na
+            perceptions = []
+
+            # Executa o ciclo de raciocínio dos agentes
             for agent in self.agents:
-                action = agent.run()
+                action = agent.run(perceptions)
+                # Caso o agente queria executar uma ação no ambiente, adiciona na pilha de ações
                 if action:
                     actions.append(action)
 
-            # Executa a pilha de ações
+            # Executa a pilha de ações no ambiente
             if actions:
                 for action in actions:
                     self.environment.execute(action)
@@ -57,7 +59,7 @@ class Interpreter:
             # Incrementa o contador com os cliclos de interpretação
             tick += 1
 
-        print('Execução do interpretador finalizada após %i ciclos.' % tick)
+        # print('Execução do interpretador finalizada após %i ciclos.' % tick)
         
         
 if __name__ == '__main__':

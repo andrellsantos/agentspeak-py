@@ -9,8 +9,8 @@ class Literal:
     def __str__(self):
         return '%s' % self.content    
 
-# Predicados
-class Predicate(Literal):
+# Functor
+class Functor(Literal):
     pass
     
 # Termos
@@ -18,23 +18,23 @@ class Term(Literal):
     pass
     
 # Estrutura base para as crenças e objetivos
-class Functor:
-    def __init__(self, predicate, term = None):
-        self.predicate = predicate
+class Predicate:
+    def __init__(self, functor, term = None):
+        self.functor = functor
         self.term = term
 
     def __str__(self):
         if self.term == None:
-            return '%s' % self.predicate
+            return '%s' % self.functor
         else:
-            return '%s(%s)' % (self.predicate, self.term)
+            return '%s(%s)' % (self.functor, self.term)
 
 # Crenças
-class Belief(Functor):
+class Belief(Predicate):
     pass
 
 # Objetivos
-class Goal(Functor):
+class Goal(Predicate):
     pass
 
 # Objetivos de realização
@@ -48,20 +48,35 @@ class TestGoal(Goal):
         return '?%s' % Goal.__str__(self)
 
 # Ações
-class Action(Functor):
+class Action(Predicate):
     pass
     
+# Imprimir
+class Print(Literal):
+    def __str__(self):
+        return '.print("%s")' % Literal.__str__(self)
+
+class Send:
+    def __init__(self, destination, type, predicate):
+        self.destination = destination
+        self.type = type
+        self.predicate = predicate
+
+    def __str__(self):
+        return '.send(%s, %s, %s)' % (destination, type, predicate)
+
+
 # Eventos ativadores do plano - Podem ser crenças ou objetivos
-class TriggeringEvent(Functor):
-    pass
+#class TriggeringEvent(Predicate):
+#    pass
 
 # Contexto do plano - Podem ser crenças ou 'true'
-class Context(Functor):
-    pass
+#class Context(Predicate):
+#    pass
 
 # Corpo do plano - Pode ser objetivos ou ações
-class Body(Functor):
-    pass
+#class Body(Predicate):
+#    pass
 
 # Plano
 class Plan:
