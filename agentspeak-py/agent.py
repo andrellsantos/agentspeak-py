@@ -21,7 +21,7 @@ class Agent:
         # Função de revisão de crenças (BRF)
         self.__beliefRevisionFunction(perceptions)
         # Se não possuir nenhum elemento no conjunto de eventos ou conjunto de planos
-        if not self.__events and self.__plan_library:
+        if not self.__events or not self.__plan_library:
             return None
         # Função de seleção de evento
         event = self.__eventSelection()

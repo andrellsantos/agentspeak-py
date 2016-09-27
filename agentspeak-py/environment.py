@@ -15,7 +15,7 @@ class Environment:
                 self.__send(action.destination, action, type, action.predicate)
 
     def __print(self, content):
-        print('[Imprimir] "%s"' % content)
+        print('[Imprimir] %s' % content)
 
     def __send(self, destination, type, predicate):
         print('[Enviar]\nDestino: %s\nTipo: %s\nPredicado: %s' % (destination, type, predicate))

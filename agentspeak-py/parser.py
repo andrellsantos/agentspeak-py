@@ -185,7 +185,7 @@ class Parser:
     def __plan_body_other(self, body_content):
         other_actions = []
         # [To-DO] Comentário
-        regex_action = '^\w*\(?([\w,]*)\)?$'
+        regex_action = '^(\w*)\(?([\w,]*)\)?$'
         actions_content = re.findall(regex_action, body_content, re.M)
         for action_content in actions_content:
             functor = Functor(action_content[0].strip())
