@@ -3,6 +3,7 @@
 
 import re
 import os
+import imp
 from environment import *
 from mas import *
 from parser import *
@@ -48,4 +49,9 @@ class Project(Mas):
         environment_content = re.findall(regex_environment, project_content)
         if len(environment_content) > 0:
             environment_content = environment_content[0]
-            # [TO-DO] Carrega o ambiente personalizado        
+            # Carrega o ambiente personalizado
+            environment_file = '%s/%s.py' % (file_path, environment_content)
+            module = imp.load_source(environment_content, environment_file)
+            EnvironmentClass = getattr(module, environment_content)
+            self.environment = EnvironmentClass()    
+
