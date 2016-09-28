@@ -7,5 +7,7 @@ class HelloWorldEnv(Environment):
     def __init__(self):
         Environment.__init__(self)
 
-    def _execute_action(self, action):
+    def execute_action(self, action):
+        self.add_percept(None)
+        self.clear_perceptions()
         print('Hello HelloWorldEnv!')

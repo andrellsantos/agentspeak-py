@@ -93,7 +93,8 @@ class Parser:
             # Tipo de evento ativador (adição ou remoção)
             type = plan_content[0].strip()            
             # Evento ativador
-            triggering_event = self.__plan_triggering_event(plan_content[1].strip(), plan_content[2].strip(), plan_content[3].strip())
+            triggering_event = self.__plan_triggering_event(plan_content[1].strip(), \
+                plan_content[2].strip(), plan_content[3].strip())
             # Contexto
             context = self.__plan_context(plan_content[5].strip())
             # Corpo
