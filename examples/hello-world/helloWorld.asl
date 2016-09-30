@@ -1,6 +1,8 @@
 /* Agent helloWorld in project helloWorld.aslpy */
 
 /* Initial beliefs and rules */
+hello(world).
+~hello(world).
 
 /* Initial goals */
 
@@ -8,4 +10,4 @@
 
 /* Plans */
 
-+!start : true <- .print("hello world.").
++!start : true <- aloha; .print().

@@ -138,39 +138,42 @@ class Parser:
         return context_content
 
     # Corpo
-    def __plan_body(self, body_content):
+    def __plan_body(self, body_content):        
+        body_content = re.split(';', body_content)
         plan_body = []        
-        # Ações do tipo .print()
-        print_actions = self.__plan_body_print(body_content)
-        plan_body.extend(print_actions)
-        # Ações do tipo .send()
-        send_actions = self.__plan_body_send(body_content)
-        plan_body.extend(send_actions)
-        # Outras ações
-        other_actions = self.__plan_body_other(body_content)
-        plan_body.extend(other_actions)
+        for content in body_content:           
+            # Ações do tipo .print()
+            print_actions = self.__plan_body_print(content.strip())
+            plan_body.extend(print_actions)
+            # Ações do tipo .send()
+            send_actions = self.__plan_body_send(content.strip())
+            plan_body.extend(send_actions)
+            # Outras ações
+            other_actions = self.__plan_body_other(content.strip())
+            plan_body.extend(other_actions)
 
         return plan_body
 
     # Ações do tipo .print()
-    def __plan_body_print(self, body_content):
+    def __plan_body_print(self, content):
         print_actions = []
         # [To-DO] Comentário
-        regex_print = '^.print\("(.*)"\)$'
-        prints_content = re.findall(regex_print, body_content, re.M)
+        # regex_print = '^.print\(\"?(.*)\"?\)$'
+        regex_print = '^.print\((.*)\)$'
+        prints_content = re.findall(regex_print, content, re.M)
         for print_content in prints_content:
-            _print = Print(print_content)
+            _print = Print(print_content[1:-1])
             print_actions.append(_print)
 
         return print_actions
 
     # Ações do tipo .send()
-    def __plan_body_send(self, body_content):
+    def __plan_body_send(self, content):
         send_actions = []
         # [To-DO] Comentário
         # regex_send = '^.send\((\w*),(\w*),(.*)\)$'
         regex_send = '^.send\((\w*),(\w*),(\w*\((\w*)\))\)$'
-        sends_content = re.findall(regex_send, body_content, re.M)
+        sends_content = re.findall(regex_send, content, re.M)
         for send_content in sends_content:
             functor = Functor(send_content[2].strip())
             term = None
@@ -183,11 +186,11 @@ class Parser:
         return send_actions
 
     # Outras ações
-    def __plan_body_other(self, body_content):
+    def __plan_body_other(self, content):
         other_actions = []
         # [To-DO] Comentário
         regex_action = '^(\w*)\(?([\w,]*)\)?$'
-        actions_content = re.findall(regex_action, body_content, re.M)
+        actions_content = re.findall(regex_action, content, re.M)
         for action_content in actions_content:
             functor = Functor(action_content[0].strip())
             term = None

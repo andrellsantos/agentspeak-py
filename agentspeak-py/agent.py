@@ -40,7 +40,14 @@ class Agent:
         # Função de atualização do conjunto de intenções
         self.__updateIntentions(intended_mean)
         # Função de selecão da intenção que será executada
-        intention = self.__intentionSelection() 
+        intention = self.__intentionSelection()
+
+        # [TO-DO] Melhorar
+        # .print(belief_base)
+        for action in intention:
+            if isinstance(action, Print) and not action.content:               
+                action.content = "\n".join(str(belief) for belief in self.__belief_base)                    
+
         # Retorna a intenção que será executada no ambiente
         return intention
 
@@ -50,8 +57,15 @@ class Agent:
         for perception in perceptions:
             # Caso as percepções do ambiente sejam diferentes, o conjunto de crenças é atualizado para que
             # reflitam o novo estado do ambiente
-
             # Cada crença modificada gera um novo evento que é adicionado no conjunto de eventos
+
+
+            # Cada literal "l" em "p" que não está em "b" é adicionado em "e"
+
+
+            # Cada literal "l" em "b" que não está em "p" é removido de "e"
+
+
             pass
 
     # Função de seleção de evento

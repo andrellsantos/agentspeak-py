@@ -23,7 +23,7 @@ class Environment:
 
     # Imprime um conteúdo na tela
     def __print(self, content):
-        print('[Imprimir] %s' % content)
+        print('%s' % content)
 
     # [TO-DO] Envia para o agente de destino o predicado de acordo com o tipo
     def __send(self, destination, type, predicate):

@@ -10,4 +10,9 @@ class HelloWorldEnv(Environment):
     def execute_action(self, action):
         self.add_percept(None)
         self.clear_perceptions()
+
+        if action.functor.content == 'aloha':
+            self.aloha()
+
+    def aloha(self):
         print('Hello HelloWorldEnv!')
