@@ -10,4 +10,4 @@ hello(world).
 
 /* Plans */
 
-+!start : true <- aloha; .print().
++!start : true <- aloha; .print("Formas de imprimir a base de conhecimento:"); .print(); .print("").

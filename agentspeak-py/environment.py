@@ -6,7 +6,8 @@ from agentspeak import *
 class Environment:
     def __init__(self):
         # Percepções do ambiente
-        self.clear_perceptions()
+        self.perceptions = []
+        self.message_wall = {}
     
     # Executa as ações no ambiente
     def execute(self, actions):
@@ -19,7 +20,7 @@ class Environment:
                 self.__send(action.destination, action, type, action.predicate)
             # Outras ações
             else:
-                self.execute_action(action)
+                self._execute_action(action)
 
     # Imprime um conteúdo na tela
     def __print(self, content):
@@ -27,16 +28,48 @@ class Environment:
 
     # [TO-DO] Envia para o agente de destino o predicado de acordo com o tipo
     def __send(self, destination, type, predicate):
-        print('[Enviar]\nDestino: %s\nTipo: %s\nPredicado: %s' % (destination, type, predicate))
+        
+        # Tell
+        if type == 'tell':
+            pass
+        # Untell
+        elif type == 'untell':
+            pass
+        # Achieve
+        elif type == 'achieve':
+            pass
+        # Unachieve
+        elif type == 'unachieve':
+            pass
+        # AskOne
+        elif type == 'askOne':
+            pass
+        # AskAll
+        elif type == 'askAll':
+            pass
+        # TellHow
+        elif type == 'tellHow':
+            pass
+        # UntellHow
+        elif type == 'untellHow':
+            pass
+        # AskHow
+        elif type == 'askHow':
+            pass
+        else:
+            raise "Invalid send type!"
+
+        # [TO-DO] Fazer (Página 118)
+
 
     # Método que será sobrescrito pela classe personalizada de ambiente
-    def execute_action(self, action):
+    def _execute_action(self, action):
         pass
 
-    def add_percept(self, literal):
+    def _add_percept(self, literal):
         self.perceptions.append(literal)
-
-    def clear_perceptions(self):
+        
+    def _clear_perceptions(self):
         self.perceptions = []
 
     def __str__(self):

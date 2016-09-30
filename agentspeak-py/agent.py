@@ -13,18 +13,23 @@ class Agent:
 
         # Os objetivos iniciais do agente são adicionado ao conjunto de eventos
         self.__events = copy.copy(initial_goals)
+        self.__messages = []
         self.__intentions = []
     
-    def run(self, perceptions = []):
+    def run(self, perceptions = [], message_wall = {}):
         # print('Executando ciclo de raciocínio do agente %s...' % self.name)
         
+        # Função de verificação de mensagens
+        self.__checkMessageWall(message_wall)
+        # Função de atualização de crenças (BUF)
+        self.__beliefUpdateFunction(perceptions)
         # Função de revisão de crenças (BRF)
-        self.__beliefRevisionFunction(perceptions)
+        self.__beliefRevisionFunction()
         # Se não possuir nenhum elemento no conjunto de eventos ou conjunto de planos
         if not self.__events or not self.__plan_library:
             return None
         # Função de seleção de evento
-        event = self.__eventSelection()
+        event = self._eventSelection()
         # Função de unificação para seleção dos planos relevantes
         relevant_plans = self.__unifyEvent(event)
         # Se nenhum plano relevante for selecionado
@@ -36,13 +41,12 @@ class Agent:
         if not applicable_plans:
             return None            
         # Função de seleção do plano pretendido
-        intended_mean = self.__intendedMeansSelection(applicable_plans)
+        intended_mean = self._intendedMeansSelection(applicable_plans)
         # Função de atualização do conjunto de intenções
         self.__updateIntentions(intended_mean)
         # Função de selecão da intenção que será executada
-        intention = self.__intentionSelection()
+        intention = self._intentionSelection()
 
-        # [TO-DO] Melhorar
         # .print(belief_base)
         for action in intention:
             if isinstance(action, Print) and not action.content:               
@@ -51,8 +55,14 @@ class Agent:
         # Retorna a intenção que será executada no ambiente
         return intention
 
-    # Função de revisão de crenças (BRF)
-    def __beliefRevisionFunction(self, perceptions):
+    # [TO-DO] Fazer
+    # Função de verificação de mensagens
+    def __checkMessageWall(self, message_wall):
+        pass
+
+    # [TO-DO] Fazer
+    # Função de atualização de crenças (BUF)
+    def __beliefUpdateFunction(self, perceptions):
         # Recebe as informações provenientes do ambiente e as confronta com o seu conjunto de crenças
         for perception in perceptions:
             # Caso as percepções do ambiente sejam diferentes, o conjunto de crenças é atualizado para que
@@ -68,10 +78,14 @@ class Agent:
 
             pass
 
+    # [TO-DO] Fazer
+    # Função de revisão de crenças (BRF)
+    def __beliefRevisionFunction(self):
+        pass
+
     # Função de seleção de evento
-    def __eventSelection(self):
+    def _eventSelection(self):
         # Escolhe um único evento do conjunto de eventos
-        # pop() - Remove e retorna o primeiro elemento da lista
         event = self.__events.pop()
         return event
 
@@ -95,9 +109,8 @@ class Agent:
         return applicable_plans
 
     # Função de seleção do plano pretendido
-    def __intendedMeansSelection(self, applicable_plans):
+    def _intendedMeansSelection(self, applicable_plans):
         # Escolhe um único plano aplicável do conjunto de planos aplicáveis
-        # pop() - Remove e retorna o primeiro elemento da lista
         applicable_plan = applicable_plans.pop()
         return applicable_plan
 
@@ -106,9 +119,8 @@ class Agent:
         self.__intentions.append(intention)
 
     # Função de selecão da intenção que será executada
-    def __intentionSelection(self):
+    def _intentionSelection(self):
         # Escolhe uma única intenção do conjunto de intenções
-        # pop() - Remove e retorna o primeiro elemento da lista
         intention = self.__intentions.pop()
         return intention
         
