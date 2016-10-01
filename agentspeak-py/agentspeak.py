@@ -67,8 +67,31 @@ class Send:
 
 
 # Eventos ativadores do plano - Podem ser crenças ou objetivos
-#class TriggeringEvent(Predicate):
-#    pass
+class TriggeringEvent:
+    def __init__(self, type, predicate):
+        self.type = type
+        self.predicate = predicate
+
+    def __str__(self):
+        return '%s%s' % (self.type, self.predicate)
+
+# Base de Crenças
+class BeliefBase:
+    def __init__(self, beliefs = []):
+        self.items = beliefs
+
+    def add(self, predicate):
+        self.items.append(predicate)
+        triggering_event = TriggeringEvent('+', predicate)
+        return triggering_event
+    
+    def remove(self, predicate):
+        self.items.remove(predicate)
+        triggering_event = TriggeringEvent('-', predicate)
+        return triggering_event
+
+    def __str__(self):
+        return "\n".join(str(belief) for belief in self.items) 
 
 # Contexto do plano - Podem ser crenças ou 'true'
 #class Context(Predicate):
@@ -83,12 +106,11 @@ class Plan:
     # Tratar inicialmente como sendo uma string no contexto e no corpo
     # [TO-DO] Decompor o contexto e o corpo em uma lista de elementos
     # [TO-DO] Adicionar a fonte de recebimento do evento (Exemplo do paranóico)
-    def __init__(self, type, triggering_event, context, body):
-        self.type = type
+    def __init__(self, triggering_event, context, body):
         self.triggering_event = triggering_event
         self.context = context
         self.body = body
 
     def __str__(self):
-        return '%s%s : %s <- %s' % (self.type, self.triggering_event, self.context, self.body)
+        return '%s : %s <- %s' % (self.triggering_event, self.context, self.body)
 

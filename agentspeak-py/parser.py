@@ -25,13 +25,13 @@ class Parser:
         # agent_content = re.sub(' ', '', agent_content)
 
         # Crenças
-        beliefs = self.__beliefs(agent_content)
+        belief_base = BeliefBase(self.__beliefs(agent_content))
         # Objetivos
         goals = self.__goals(agent_content)        
         # Planos
         plans = self.__plans(agent_content)		
         # Agente
-        self.agent = Agent(agent_name, beliefs, goals, plans)
+        self.agent = Agent(agent_name, belief_base, goals, plans)
 
     # Crenças
     def __beliefs(self, agent_content):
@@ -92,15 +92,17 @@ class Parser:
         for plan_content in plans_content:
             # Tipo de evento ativador (adição ou remoção)
             type = plan_content[0].strip()            
-            # Evento ativador
-            triggering_event = self.__plan_triggering_event(plan_content[1].strip(), \
+            # Predicado do evento ativador
+            predicate = self.__plan_triggering_event(plan_content[1].strip(), \
                 plan_content[2].strip(), plan_content[3].strip())
+            # Evento ativador
+            triggering_event = TriggeringEvent(type, predicate)
             # Contexto
             context = self.__plan_context(plan_content[5].strip())
             # Corpo
             body = self.__plan_body(plan_content[6].strip())
             # Plano
-            plan = Plan(type, triggering_event, context, body)
+            plan = Plan(triggering_event, context, body)
             # Adiciona o plano na lista de planos
             plans.append(plan)
 
@@ -157,7 +159,7 @@ class Parser:
     # Ações do tipo .print()
     def __plan_body_print(self, content):
         print_actions = []
-        # [To-DO] Comentário
+        # [TO-DO] Comentário
         # regex_print = '^.print\(\"?(.*)\"?\)$'
         regex_print = '^.print\((.*)\)$'
         prints_content = re.findall(regex_print, content, re.M)
@@ -170,7 +172,7 @@ class Parser:
     # Ações do tipo .send()
     def __plan_body_send(self, content):
         send_actions = []
-        # [To-DO] Comentário
+        # [TO-DO] Comentário
         # regex_send = '^.send\((\w*),(\w*),(.*)\)$'
         regex_send = '^.send\((\w*),(\w*),(\w*\((\w*)\))\)$'
         sends_content = re.findall(regex_send, content, re.M)
@@ -188,7 +190,7 @@ class Parser:
     # Outras ações
     def __plan_body_other(self, content):
         other_actions = []
-        # [To-DO] Comentário
+        # [TO-DO] Comentário
         regex_action = '^(\w*)\(?([\w,]*)\)?$'
         actions_content = re.findall(regex_action, content, re.M)
         for action_content in actions_content:

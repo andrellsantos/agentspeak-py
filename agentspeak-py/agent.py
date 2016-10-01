@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import copy
+# import copy
 from agentspeak import *
 
 class Agent:
@@ -12,13 +12,17 @@ class Agent:
         self.__plan_library = plan_library
 
         # Os objetivos iniciais do agente são adicionado ao conjunto de eventos
-        self.__events = copy.copy(initial_goals)
+        # self.__events = copy.copy(initial_goals)
+        self.__events = []
+        for goal in initial_goals:
+            self.__events.append(self.__belief_base.add(goal))
+
         self.__messages = []
         self.__intentions = []
     
     def run(self, perceptions = [], message_wall = {}):
         # print('Executando ciclo de raciocínio do agente %s...' % self.name)
-        
+        # return None
         # Função de verificação de mensagens
         self.__checkMessageWall(message_wall)
         # Função de atualização de crenças (BUF)
@@ -50,7 +54,7 @@ class Agent:
         # .print(belief_base)
         for action in intention:
             if isinstance(action, Print) and not action.content:               
-                action.content = "\n".join(str(belief) for belief in self.__belief_base)                    
+                action.content = str(self.__belief_base)
 
         # Retorna a intenção que será executada no ambiente
         return intention
