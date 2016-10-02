@@ -24,29 +24,69 @@ class Parser:
         # [FAIL] Não posso por causa das string dentro do .print ou .send
         # agent_content = re.sub(' ', '', agent_content)
 
+        self.agent = None
         # Crenças
         belief_base = BeliefBase(self.__beliefs(agent_content))
         # Objetivos
-        goals = self.__goals(agent_content)        
+        # goals = self.__goals(agent_content)        
         # Planos
-        plans = self.__plans(agent_content)		
+        # plans = self.__plans(agent_content)		
         # Agente
-        self.agent = Agent(agent_name, belief_base, goals, plans)
+        # self.agent = Agent(agent_name, belief_base, goals, plans)
+        print(belief_base)
 
     # Crenças
     def __beliefs(self, agent_content):
         beliefs = []
-        # [belief(terms)]
-        # regex_beliefs = '(^[~]?\w*\(.*\))\.\s*$'
-        # [belief][(terms)]
-        regex_beliefs = '^([~]?\w*)\((.*)\)\.\s*$'
+        # [TO-DO] Comentar
+        regex_beliefs = '^\s*([~])?(\w*)\(\s*(.*)\s*\)\.\s*$'
         beliefs_content = re.findall(regex_beliefs, agent_content, re.M)
         for belief_content in beliefs_content:
-            functor = Functor(belief_content[0].strip())
-            term = Term(belief_content[1].strip())
-            # Crença
-            belief = Belief(functor, term)
-            # Adiciona a crença na lista de crenças        
+            belief = None
+            # Negation
+            negation_content = belief_content[0].strip()
+            if negation_content:
+                belief = Literal(negation_content)
+            # Functor
+            functor_content = belief_content[1].strip()
+            functor = Literal(functor_content)
+            if belief:
+                belief.args = {functor}
+            else:
+                belief = functor
+            # Arguments
+            arguments = []
+            arguments_content = re.split(',', belief_content[2].strip())
+            for argument_content in arguments_content:
+                argument_content = argument_content.strip()
+                arguments.append(Literal(argument_content))
+            functor.args = set(arguments)
+
+            # regex_beliefs = '^\s*([~])?(\w*)\(\s*(\w*),?\s*?(\w*)\s*\)\.\s*$'
+            # [TO-DO] Refazer sem hardcoded
+            # negation = belief_content[0].strip()
+            # functor = belief_content[1].strip()
+            # first_argument = belief_content[2].strip()
+            # second_argument = belief_content[3].strip()
+            
+            # # ~localizacao(lixeira, c).
+            # if negation and second_argument:
+            #     # belief = Literal('~', Literal('localizacao', Literal('lixeira'), Literal('c')))
+            #     belief = Literal(negation, Literal(functor, Literal(first_argument), Literal(second_argument)))
+            # # ~pista(e)
+            # elif negation:
+            #     # belief = Literal('~', Literal('pista', Literal('e')))
+            #     belief = Literal(negation, Literal(functor, Literal(first_argument)))
+            # # localizacao(lixeira, b).
+            # elif second_argument:
+            #     # belief = Literal('localizacao', Literal('lixeira'), Literal('b'))
+            #     belief = Literal(functor, Literal(first_argument), Literal(second_argument))
+            # # pista(a)
+            # else:
+            #     # belief = Literal('pista', Literal('a'))
+            #     belief = Literal(functor, Literal(first_argument))
+
+
             beliefs.append(belief)
 
         return beliefs
@@ -54,8 +94,8 @@ class Parser:
     # Objetivos
     def __goals(self, agent_content):
         goals = []
-        # [prefix goal(terms)]
-        # regex_goals = '^([\!\?].*)\.\s*$'
+        # regex_goals = '^\s*([\!\?])([~])?(\w*)\(\s*(.*)\s*\)\.\s*$'
+        # ^\s*([\!\?])([~])?(\w*)\(?\s*?(\w*)?,?\s*?(\w*)\s*?\)?\.\s*$
         # [prefix] [goal][(terms)]
         regex_goals = '^([\!\?])([~]?\w*)\(?([\w,]*)\)?\.\s*$'
         goals_content = re.findall(regex_goals, agent_content, re.M)

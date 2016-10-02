@@ -149,17 +149,17 @@ def is_var_symbol(s):
     return is_symbol(s) and s[0].islower()
 
 
-def is_prop_symbol(s):
-    """A proposition logic symbol is an initial-uppercase string."""
-    return is_symbol(s) and s[0].isupper()
+# def is_prop_symbol(s):
+#     """A proposition logic symbol is an initial-uppercase string."""
+#     return is_symbol(s) and s[0].isupper()
 
 
-def variables(s):
-    """Return a set of the variables in expression s.
-    >>> variables(expr('F(x, x) & G(x, y) & H(y, z) & R(A, z, 2)')) == {x, y, z}
-    True
-    """
-    return {x for x in subexpressions(s) if is_variable(x)}
+# def variables(s):
+#     """Return a set of the variables in expression s.
+#     >>> variables(expr('F(x, x) & G(x, y) & H(y, z) & R(A, z, 2)')) == {x, y, z}
+#     True
+#     """
+#     return {x for x in subexpressions(s) if is_variable(x)}
 
 
 # def is_definite_clause(s):

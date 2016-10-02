@@ -184,7 +184,7 @@ class Expr:
         elif is_symbol(self.op): # Functional or Propositional operator
             return '%s(%s)' % (self.op, ', '.join(map(repr, self.args)))
         elif len(self.args) == 1: # Prefix operator
-            return self.op + repr(self.args[0])
+            return self.op + repr(list(self.args)[0])
         else: # Infix operator
             return '(%s)' % (' '+self.op+' ').join(map(repr, self.args))
 
@@ -253,10 +253,10 @@ def is_var_symbol(s):
     "A logic variable symbol is an initial-lowercase string."
     return is_symbol(s) and s[0].islower()
 
-def is_prop_symbol(s):
-    """A proposition logic symbol is an initial-uppercase string other than
-    TRUE or FALSE."""
-    return is_symbol(s) and s[0].isupper() and s != 'TRUE' and s != 'FALSE'
+# def is_prop_symbol(s):
+#     """A proposition logic symbol is an initial-uppercase string other than
+#     TRUE or FALSE."""
+#     return is_symbol(s) and s[0].isupper() and s != 'TRUE' and s != 'FALSE'
 
 
 # ## Useful constant Exprs used in examples and code:

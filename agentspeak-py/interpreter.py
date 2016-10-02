@@ -32,7 +32,7 @@ class Interpreter:
         # Contador com os cilos de interpretação
         tick = 0
         # Variável de controle para parar as iterações e finalizar o interpretador
-        wantFinish = False
+        wantFinish = True
         # Realiza as iterações enquanto que o usuário permitir
         while not wantFinish:
             # Pilha de ações provenientes do raciocínio dos agentes

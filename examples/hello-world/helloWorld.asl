@@ -1,6 +1,16 @@
 /* Agent helloWorld in project helloWorld.aslpy */
 
 /* Initial beliefs and rules */
+p(c).
+p1(c).
+p2(c).
+~p(c).
+~p1(c).
+~p2(c).
+
+localizacao(lixeira, b).
+~localizacao(lixeira, b).
+
 hello(world).
 ~hello(world).
 

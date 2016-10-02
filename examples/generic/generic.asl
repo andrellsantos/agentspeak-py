@@ -9,6 +9,11 @@ p2(c).
 ~p1(c).
 ~p2(c).
 
+localizacao(lixeira, b).
+
+hello(world).
+~hello(world).
+
 /* Initial goals */
 
 

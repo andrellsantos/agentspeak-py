@@ -5,21 +5,23 @@ import sys
 import platform
 
 if int(platform.python_version()[0]) < 3:
-    sys.path.insert(0, './aima/python_2')    
+    sys.path.insert(0, './aima/python_2')  
+    sys.path.insert(0, './agentspeak-py/aima/python_2')    
 else:
-    sys.path.insert(0, './aima/python_3')
-
+    sys.path.insert(0, './aima/python_3')  
+    sys.path.insert(0, './agentspeak-py/aima/python_3')
 
 from logic import *
 
 if __name__ == '__main__':    
     theta = {}
-    #event = Expr('!start')
-    #beliefs = [Expr('!start'), Expr('a', Expr('p')), Expr('~', Expr('a', Expr('p')))]
+    
+    event = Expr('!', Expr('start'))
+    beliefs = [Expr('!', Expr('start')), Expr('a', Expr('p')), Expr('~', Expr('a', Expr('p')))]
 
-    # for belief in beliefs:
-    #    if unify(event, belief, theta):
-        #    print(belief)
+    for belief in beliefs:
+       if unify(event, belief, theta) != None:
+           print(belief)
 
 
     # P1: +localizacao(lixo, X) : ...
@@ -33,9 +35,6 @@ if __name__ == '__main__':
     # E: +!localizacao(robo, b)
     event = Expr('+', Expr('!', Expr('localizacao', Expr('robo'), Expr('b'))))
 
-    # print(event)
-    # print(plans)
-
     for plan in plans:
-       if unify(event, plan, theta):
+       if unify(event, plan, theta) != None:
            print(plan)
