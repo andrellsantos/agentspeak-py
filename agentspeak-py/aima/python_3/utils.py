@@ -422,13 +422,17 @@ class Expr(object):
                 and self.op == other.op
                 and self.args == other.args)
 
-    def __hash__(self): return hash(self.op) ^ hash(self.args)
+    def __hash__(self):
+        # return hash(self.op) ^ hash(self.args)
+        return hash(self.op) ^ hash(tuple(self.args)) 
 
     def __repr__(self):
         op = self.op
         args = [str(arg) for arg in self.args]
         if op.isidentifier():       # f(x) or f(x, y)
             return '{}({})'.format(op, ', '.join(args)) if args else op
+        elif len(args) == 0:
+            return op
         elif len(args) == 1:        # -x or -(x + 1)
             return op + args[0]
         else:                       # (x - y)

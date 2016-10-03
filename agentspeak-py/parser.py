@@ -33,8 +33,8 @@ class Parser:
         plans = self.__plans(agent_content)		
         # Agente
         # self.agent = Agent(agent_name, belief_base, goals, plans)
-        # print(belief_base)
-        # print(goals)
+        print(belief_base)
+        print(goals)
         for plan in plans: print(plan)
 
     # Crenças

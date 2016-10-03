@@ -129,7 +129,7 @@ class TriggeringEvent:
         self.expression = triggering_event
 
     def __str__(self):
-        return None
+        return '%s' % self.expression
 
 # Base de Crenças
 class BeliefBase:
@@ -157,23 +157,27 @@ class Context:
 class Body:
    pass
 
-# # Ações
-# class Action(Predicate):
-#     pass
+# Ações
+class Action:
+    pass
     
-# # Imprimir
-# class Print(Literal):
-#     def __str__(self):
-#         return '.print("%s")' % Literal.__str__(self)
+# Função .print()
+class Print:
+    def __init__(self, content):
+        self.content = content
 
-# class Send:
-#     def __init__(self, destination, type, predicate):
-#         self.destination = destination
-#         self.type = type
-#         self.predicate = predicate
+    def __str__(self):
+        return '.print("%s")' % self.content
 
-#     def __str__(self):
-#         return '.send(%s, %s, %s)' % (destination, type, predicate)
+# Função .send()
+class Send:
+    def __init__(self, destination, type, predicate):
+        self.destination = destination
+        self.type = type
+        self.predicate = predicate
+
+    def __str__(self):
+        return '.send(%s, %s, %s)' % (destination, type, predicate)
 
 
 # Plano
