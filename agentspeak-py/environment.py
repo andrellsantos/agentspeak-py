@@ -57,7 +57,7 @@ class Environment:
         elif type == 'askHow':
             pass
         else:
-            raise "Invalid send type!"
+            raise 'Parâmetro incorreto da função .send()!'
 
         # [TO-DO] Fazer (Página 118)
 

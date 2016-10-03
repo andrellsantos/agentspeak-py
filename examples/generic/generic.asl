@@ -37,7 +37,7 @@ hello(world).
 //-locked(door) : true
 //  <- .print("Thanks for unlocking the door!").
 
-+!locked(door)[source(paranoid)]
++!locked(door) //[source(paranoid)]
   : ~locked(door)
   <- lock.
 
@@ -45,7 +45,7 @@ hello(world).
   : ~locked(door)
   <- lock.
   
-+!~locked(door)[source(claustrophobe)]
++!~locked(door) //[source(claustrophobe)]
   : locked(door)
   <- unlock.
   

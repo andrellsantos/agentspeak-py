@@ -19,6 +19,8 @@ if __name__ == '__main__':
     event = Expr('!', Expr('start'))
     beliefs = [Expr('!', Expr('start')), Expr('a', Expr('p')), Expr('~', Expr('a', Expr('p')))]
 
+    print(event)
+
     for belief in beliefs:
        if unify(event, belief, theta) != None:
            print(belief)

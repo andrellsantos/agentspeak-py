@@ -28,7 +28,7 @@ class Project(Mas):
         
         regex_agents = '\s*agents\s*=\s*\[(.*)\]'
         agents_name = re.findall(regex_agents, project_content, re.S)
-        if len(agents_name) > 0:
+        if agents_name:
             # Remove os espaços em branco
             agents_name = re.sub(' ', '', agents_name[0])
             # Cria um array com o nome dos agentes
@@ -47,7 +47,7 @@ class Project(Mas):
 
         regex_environment = '\s*environment\s*=\s*(\w*)'
         environment_content = re.findall(regex_environment, project_content)
-        if len(environment_content) > 0:
+        if environment_content:
             environment_content = environment_content[0]
             # Carrega o ambiente personalizado
             environment_file = '%s/%s.py' % (file_path, environment_content)

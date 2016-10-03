@@ -28,217 +28,51 @@ class Parser:
         # Crenças
         belief_base = BeliefBase(self.__beliefs(agent_content))
         # Objetivos
-        # goals = self.__goals(agent_content)        
+        goals = self.__goals(agent_content)        
         # Planos
-        # plans = self.__plans(agent_content)		
+        plans = self.__plans(agent_content)		
         # Agente
         # self.agent = Agent(agent_name, belief_base, goals, plans)
-        print(belief_base)
+        # print(belief_base)
+        # print(goals)
+        for plan in plans: print(plan)
 
     # Crenças
     def __beliefs(self, agent_content):
         beliefs = []
-        # [TO-DO] Comentar
-        regex_beliefs = '^\s*([~])?(\w*)\(\s*(.*)\s*\)\.\s*$'
+        # Beliefs: [~]functor(terms)
+        regex_beliefs = '^\s*([~]?\w*\(.*\))\.\s*$'
         beliefs_content = re.findall(regex_beliefs, agent_content, re.M)
         for belief_content in beliefs_content:
-            belief = None
-            # Negation
-            negation_content = belief_content[0].strip()
-            if negation_content:
-                belief = Literal(negation_content)
-            # Functor
-            functor_content = belief_content[1].strip()
-            functor = Literal(functor_content)
-            if belief:
-                belief.args = {functor}
-            else:
-                belief = functor
-            # Arguments
-            arguments = []
-            arguments_content = re.split(',', belief_content[2].strip())
-            for argument_content in arguments_content:
-                argument_content = argument_content.strip()
-                arguments.append(Literal(argument_content))
-            functor.args = set(arguments)
-
-            # regex_beliefs = '^\s*([~])?(\w*)\(\s*(\w*),?\s*?(\w*)\s*\)\.\s*$'
-            # [TO-DO] Refazer sem hardcoded
-            # negation = belief_content[0].strip()
-            # functor = belief_content[1].strip()
-            # first_argument = belief_content[2].strip()
-            # second_argument = belief_content[3].strip()
-            
-            # # ~localizacao(lixeira, c).
-            # if negation and second_argument:
-            #     # belief = Literal('~', Literal('localizacao', Literal('lixeira'), Literal('c')))
-            #     belief = Literal(negation, Literal(functor, Literal(first_argument), Literal(second_argument)))
-            # # ~pista(e)
-            # elif negation:
-            #     # belief = Literal('~', Literal('pista', Literal('e')))
-            #     belief = Literal(negation, Literal(functor, Literal(first_argument)))
-            # # localizacao(lixeira, b).
-            # elif second_argument:
-            #     # belief = Literal('localizacao', Literal('lixeira'), Literal('b'))
-            #     belief = Literal(functor, Literal(first_argument), Literal(second_argument))
-            # # pista(a)
-            # else:
-            #     # belief = Literal('pista', Literal('a'))
-            #     belief = Literal(functor, Literal(first_argument))
-
-
-            beliefs.append(belief)
+            belief = Belief(belief_content)
+            beliefs.append(belief.expression)
 
         return beliefs
 
     # Objetivos
     def __goals(self, agent_content):
         goals = []
-        # regex_goals = '^\s*([\!\?])([~])?(\w*)\(\s*(.*)\s*\)\.\s*$'
-        # ^\s*([\!\?])([~])?(\w*)\(?\s*?(\w*)?,?\s*?(\w*)\s*?\)?\.\s*$
-        # [prefix] [goal][(terms)]
-        regex_goals = '^([\!\?])([~]?\w*)\(?([\w,]*)\)?\.\s*$'
+        # Goals: [!|?][~]functor(terms)
+        regex_goals = '^\s*([\!\?].*)\.\s*$'
         goals_content = re.findall(regex_goals, agent_content, re.M)
         for goal_content in goals_content:
-            # Objetivo de realização
-            if goal_content[0] == '!':
-                functor = Functor(goal_content[1].strip())
-                term = None
-                if goal_content[2].strip():
-                    term = Term(goal_content[2].strip())
-                # Objetivo de realização
-                goal = AchievmentGoal(functor, term)
-            # Objetivo de teste
-            else:
-                functor = Functor(goal_content[1].strip())
-                term = None
-                if goal_content[2].strip():
-                    term = Term(goal_content[2].strip())
-                # Objetivo de teste
-                goal = TestGoal(functor, term)
-            # Adiciona o objetivo na lista de objetivos
-            goals.append(goal)
+            goal = Goal(goal_content)
+            goals.append(goal.expression)
 
         return goals
     
     # Planos
     def __plans(self, agent_content):
         plans = []
-        # [prefix] [event(terms)] : [context] <- [body]
-        # regex_plans = '^([+-])(.*)\s*:\s*(.*)\s*<-\s*(.*)\s*\.\s*$'
-        # [prefix] event[(terms)] : [context] <- [body]
-        regex_plans = '^([+-])([\!]?)([~]?\w*)\(?([\w,]*)\)?(.*)\s*:\s*(.*)\s*<-\s*(.*)\s*\.\s*$'
+        # Plans: [+|-] [event(terms)] : [context] <- [body]
+        regex_plans = '^\s*([+-])(.*)\s*:\s*(.*)\s*<-\s*(.*)\s*\.\s*$'
         plans_content = re.findall(regex_plans, agent_content, re.M)
         for plan_content in plans_content:
-            # Tipo de evento ativador (adição ou remoção)
-            type = plan_content[0].strip()            
-            # Predicado do evento ativador
-            predicate = self.__plan_triggering_event(plan_content[1].strip(), \
-                plan_content[2].strip(), plan_content[3].strip())
-            # Evento ativador
-            triggering_event = TriggeringEvent(type, predicate)
-            # Contexto
-            context = self.__plan_context(plan_content[5].strip())
-            # Corpo
-            body = self.__plan_body(plan_content[6].strip())
-            # Plano
-            plan = Plan(triggering_event, context, body)
-            # Adiciona o plano na lista de planos
+            type = plan_content[0].strip()
+            triggering_event = plan_content[1].strip()
+            context = plan_content[2].strip()
+            body = plan_content[3].strip()
+            plan = Plan(type, triggering_event, context, body)
             plans.append(plan)
 
         return plans
-
-    # Evento Ativador
-    def __plan_triggering_event(self, type, functor_content, term_content):
-        # Objetivo de realização
-        if type == '!':
-            functor = Functor(functor_content)
-            term = None
-            if term_content:
-                term = Term(term_content)
-            # Evento ativador
-            triggering_event = AchievmentGoal(functor, term)
-        # Objetivo de teste
-        elif type == '?':
-            functor = Functor(functor_content)
-            term = None
-            if term_content:
-                term = Term(term_content)
-            # Evento ativador
-            triggering_event = TestGoal(functor, term)
-        # Crença
-        else:
-            functor = Functor(functor_content)
-            term = Term(term_content)
-            # Evento ativador
-            triggering_event = Belief(functor, term)
-
-        return triggering_event
-
-    # [TO-DO] Contexto
-    def __plan_context(self, context_content):
-        return context_content
-
-    # Corpo
-    def __plan_body(self, body_content):        
-        body_content = re.split(';', body_content)
-        plan_body = []        
-        for content in body_content:           
-            # Ações do tipo .print()
-            print_actions = self.__plan_body_print(content.strip())
-            plan_body.extend(print_actions)
-            # Ações do tipo .send()
-            send_actions = self.__plan_body_send(content.strip())
-            plan_body.extend(send_actions)
-            # Outras ações
-            other_actions = self.__plan_body_other(content.strip())
-            plan_body.extend(other_actions)
-
-        return plan_body
-
-    # Ações do tipo .print()
-    def __plan_body_print(self, content):
-        print_actions = []
-        # [TO-DO] Comentário
-        # regex_print = '^.print\(\"?(.*)\"?\)$'
-        regex_print = '^.print\((.*)\)$'
-        prints_content = re.findall(regex_print, content, re.M)
-        for print_content in prints_content:
-            _print = Print(print_content[1:-1])
-            print_actions.append(_print)
-
-        return print_actions
-
-    # Ações do tipo .send()
-    def __plan_body_send(self, content):
-        send_actions = []
-        # [TO-DO] Comentário
-        # regex_send = '^.send\((\w*),(\w*),(.*)\)$'
-        regex_send = '^.send\((\w*),(\w*),(\w*\((\w*)\))\)$'
-        sends_content = re.findall(regex_send, content, re.M)
-        for send_content in sends_content:
-            functor = Functor(send_content[2].strip())
-            term = None
-            if send_content[3].strip():
-                term = Term(send_content[3].strip())
-            action = Action(functor, term)
-            send = Send(send_content[0], send_content[1], action)
-            send_actions.append(send)
-
-        return send_actions
-
-    # Outras ações
-    def __plan_body_other(self, content):
-        other_actions = []
-        # [TO-DO] Comentário
-        regex_action = '^(\w*)\(?([\w,]*)\)?$'
-        actions_content = re.findall(regex_action, content, re.M)
-        for action_content in actions_content:
-            functor = Functor(action_content[0].strip())
-            term = None
-            if action_content[1].strip():
-                term = Term(action_content[1].strip())
-            action = Action(functor, term)
-            other_actions.append(action)
-
-        return other_actions
