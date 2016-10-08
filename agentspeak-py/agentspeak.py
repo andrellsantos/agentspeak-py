@@ -6,7 +6,8 @@ from unify import *
 
 # Literal
 class Literal(Expr):
-    pass
+    def content(self):
+        return Expr.op
 
 # Crenças
 class Belief:
@@ -167,7 +168,10 @@ class Print:
         self.content = content
 
     def __str__(self):
-        return '.print("%s")' % self.content
+        if self.content:
+            return '.print("%s")' % self.content
+        else:
+            return '.print()'
 
 # Função .send()
 class Send:
@@ -177,8 +181,7 @@ class Send:
         self.predicate = predicate
 
     def __str__(self):
-        return '.send(%s, %s, %s)' % (destination, type, predicate)
-
+        return '.send(%s, %s, %s)' % (self.destination, self.type, self.predicate)
 
 # Plano
 class Plan:
@@ -196,21 +199,79 @@ class Plan:
 
         # Contexto
         self.context = None
-        # Se for string, quebra ela em literais
         if isinstance(context, str):
-            pass
-        # Se for um conjunto de literais, popula direto a expressão
-        elif isinstance(context, Literal):
-            pass
+            self.context = self.__plan_context(context)
 
         # Corpo
         self.body = None
-        # Se for string, quebra ela em literais
         if isinstance(body, str):
-            pass
-        # Se for um conjunto de literais, popula direto a expressão
-        elif isinstance(body, Literal):
-            pass
-
+            self.body = self.__plan_body(body)
+        
     def __str__(self):
-        return '%s : %s <- %s' % (self.triggering_event, self.context, self.body)
+        return '%s : %s <- %s' % (self.triggering_event, self.context, "; ".join(map(str, self.body)))
+
+    # Contexto
+    def __plan_context(self, context_content):
+        return context_content
+
+    # Corpo
+    def __plan_body(self, body_content):        
+        body_content = re.split(';', body_content)
+        plan_body = []        
+        for content in body_content:           
+            # Ações do tipo .print()
+            print_actions = self.__plan_body_print(content.strip())
+            plan_body.extend(print_actions)
+            # Ações do tipo .send()
+            send_actions = self.__plan_body_send(content.strip())
+            plan_body.extend(send_actions)
+            # # Outras ações
+            other_actions = self.__plan_body_other(content.strip())
+            plan_body.extend(other_actions)
+
+        return plan_body
+
+    # Ações do tipo .print()
+    def __plan_body_print(self, content):
+        print_actions = []
+        # [TO-DO] Comentário
+        regex_print = '^.print\((.*)\)$'
+        prints_content = re.findall(regex_print, content, re.M)
+        for print_content in prints_content:
+            _print = Print(print_content[1:-1])
+            print_actions.append(_print)
+
+        return print_actions
+
+    # Ações do tipo .send()
+    def __plan_body_send(self, content):
+        send_actions = []
+        # [TO-DO] Verificar no Jason como os atributos do send() são definidos
+        # [TO-DO] Comentário
+        regex_send = '^.send\((\w*),(\w*),[~!?]?(\w*)\((\w*)\)\)$'
+        sends_content = re.findall(regex_send, content, re.M)
+        for send_content in sends_content:
+            destination = send_content[0]
+            type = send_content[1]
+            predicate = Literal(send_content[2].strip())
+            if send_content[3].strip():
+                predicate.args = {Literal(send_content[3].strip())}
+
+            send = Send(destination, type, predicate)
+            send_actions.append(send)
+
+        return send_actions
+
+    # Outras ações
+    def __plan_body_other(self, content):
+        other_actions = []
+        # [TO-DO] Comentário
+        regex_action = '^(\w*)\(?([\w,]*)\)?$'
+        actions_content = re.findall(regex_action, content, re.M)
+        for action_content in actions_content:
+            action = Literal(action_content[0].strip())
+            if action_content[1].strip():
+                action.args = {Literal(action_content[1].strip())}
+            other_actions.append(action)
+
+        return other_actions

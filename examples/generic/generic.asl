@@ -30,6 +30,7 @@ hello(world).
 /* Plans */
 
 +!start : true <- .print("hello world.").
++!start : true <- .print().
 
 +locked(door) : true
   <- .send(porter,achieve,~locked(door)). // ask porter to unlock the door

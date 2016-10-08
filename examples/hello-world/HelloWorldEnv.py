@@ -11,7 +11,7 @@ class HelloWorldEnv(Environment):
         self._add_percept(None)
         self._clear_perceptions()
 
-        if action.functor.content == 'aloha':
+        if str(action) == 'aloha':
             self.aloha()
 
     def aloha(self):

@@ -16,8 +16,8 @@ from project import *
 class Interpreter:
     def __init__(self):
         # Carrega as informações do projeto
-        project = Project('/home/andre/Development/Python/agentspeak-py/examples/generic/generic.maspy')
-        # project = Project('/home/andre/Development/Python/agentspeak-py/examples/hello-world/helloWorld.maspy')
+        # project = Project('/home/andre/Development/Python/agentspeak-py/examples/generic/generic.maspy')
+        project = Project('/home/andre/Development/Python/agentspeak-py/examples/hello-world/helloWorld.maspy')
         # project = Project('/home/andre/Development/Python/agentspeak-py/examples/room/room.maspy')
         # project = Project('/home/PORTOALEGRE/13108260/DriveH/TCC/agentspeak-py/examples/generic/generic.maspy')
         
@@ -32,7 +32,7 @@ class Interpreter:
         # Contador com os cilos de interpretação
         tick = 0
         # Variável de controle para parar as iterações e finalizar o interpretador
-        wantFinish = True
+        wantFinish = False
         # Realiza as iterações enquanto que o usuário permitir
         while not wantFinish:
             # Pilha de ações provenientes do raciocínio dos agentes
