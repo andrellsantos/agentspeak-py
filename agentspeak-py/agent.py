@@ -90,42 +90,55 @@ class Agent:
     # Função de seleção de evento
     def _eventSelection(self):
         # Escolhe um único evento do conjunto de eventos
-        event = self.__events.pop()
+        event = None
+        if self.__events:
+            event = self.__events.pop()
+        
         return event
 
     # Função de unificação para seleção dos planos relevantes
     def __unifyEvent(self, event):
         # Encontra os planos relevantes unificando os eventos ativadores com os cabeçalhos do conjunto de planos
         relevant_plans = []
+        theta = {}
         for plan in self.__plan_library:
-            if str(event) == str(plan.triggering_event):
+            if unify(event, plan.triggering_event, theta) != None:
                 relevant_plans.append(plan)
 
         return relevant_plans
 
     # Função de substituição para seleção dos planos relevantes
     def __unifyContext(self, relevant_plans):
+        theta = {}
         applicable_plans = []
         for plan in relevant_plans:
-            if str(plan.context) == 'true':
-                applicable_plans.append(plan)
+            for belief in self.__belief_base.items:
+                if unify(plan.context, belief, theta) != None:
+                    applicable_plans.append(plan)
 
         return applicable_plans
 
     # Função de seleção do plano pretendido
     def _intendedMeansSelection(self, applicable_plans):
         # Escolhe um único plano aplicável do conjunto de planos aplicáveis
-        applicable_plan = applicable_plans.pop()
+        applicable_plan = None
+        if applicable_plans:
+            applicable_plan = applicable_plans.pop()
+        
         return applicable_plan
 
     def __updateIntentions(self, intended_mean):
-        intention = intended_mean.body
-        self.__intentions.append(intention)
+        if intended_mean:
+            intention = intended_mean.body
+            self.__intentions.append(intention)
 
     # Função de selecão da intenção que será executada
     def _intentionSelection(self):
         # Escolhe uma única intenção do conjunto de intenções
-        intention = self.__intentions.pop()
+        intention = None
+        if self.__intentions:
+            intention = self.__intentions.pop()
+        
         return intention
         
     def __str__(self):

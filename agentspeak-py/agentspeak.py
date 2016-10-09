@@ -15,27 +15,32 @@ class Belief:
         # Se for string, quebra ela em literais
         if isinstance(content, str):
             belief = None
-            regex_beliefs = '^\s*([~])?(\w*)\(\s*(.*)\s*\)\s*$'
-            belief_content = re.findall(regex_beliefs, content).pop()
-            # Negation
-            negation = None
-            negation_content = belief_content[0].strip()
-            if negation_content:
-                belief = Literal(negation_content)
-            # Functor
-            functor_content = belief_content[1].strip()
-            functor = Literal(functor_content)
-            if belief:
-                belief.args = {functor}
-            else:
-                belief = functor
-            # Arguments
-            arguments = []
-            arguments_content = re.split(',', belief_content[2].strip())
-            for argument_content in arguments_content:
-                argument_content = argument_content.strip()
-                arguments.append(Literal(argument_content))
-            functor.args = arguments
+            regex_beliefs = '^\s*([~])?(\w*)[\(\s*]?([\w,\s]*)[\s*\)]?$'
+            # regex_beliefs = '^\s*([~])?(\w*)\(\s*(.*)\s*\)\s*$'
+            belief_content = re.findall(regex_beliefs, content)
+            if belief_content:
+                belief_content = belief_content.pop()
+                # Negation
+                negation = None
+                negation_content = belief_content[0].strip()
+                if negation_content:
+                    belief = Literal(negation_content)
+                # Functor
+                functor_content = belief_content[1].strip()
+                functor = Literal(functor_content)
+                if belief:
+                    belief.args = {functor}
+                else:
+                    belief = functor
+                # Arguments
+                arguments = []
+                arguments_content = belief_content[2].strip()   
+                if arguments_content:
+                    arguments_content = re.split(',', belief_content[2].strip())          
+                    for argument_content in arguments_content:
+                        argument_content = argument_content.strip()
+                        arguments.append(Literal(argument_content))
+                    functor.args = arguments
             self.expression = belief
         # Se for um conjunto de literais, popula direto a expressão
         elif isinstance(content, Literal):
@@ -54,32 +59,34 @@ class Goal:
         if isinstance(content, str):
             goal = None
             regex_goals = '^\s*([\!\?])([~])?(\w*)\(?\s*([\w,\s]*)\s*\)?\s*$'
-            goal_content = re.findall(regex_goals, content).pop()
-            # Type
-            type_content = goal_content[0].strip()
-            goal = Literal(type_content)
-            # Negation
-            negation = None
-            negation_content = goal_content[1].strip()
-            if negation_content:
-                negation = Literal(negation_content)
-                goal.args = {negation}
-            # Functor
-            functor_content = goal_content[2].strip()
-            functor = Literal(functor_content)
-            if negation:
-                negation.args = {functor}
-            else:
-                goal.args = {functor}
-            # Arguments
-            arguments = []
-            arguments_content = goal_content[3].strip()
-            if arguments_content:
-                arguments_content = re.split(',', arguments_content)
-                for argument_content in arguments_content:
-                    argument_content = argument_content.strip()
-                    arguments.append(Literal(argument_content))
-                functor.args = arguments
+            goal_content = re.findall(regex_goals, content)
+            if goal_content:
+                goal_content = goal_content.pop()
+                # Type
+                type_content = goal_content[0].strip()
+                goal = Literal(type_content)
+                # Negation
+                negation = None
+                negation_content = goal_content[1].strip()
+                if negation_content:
+                    negation = Literal(negation_content)
+                    goal.args = {negation}
+                # Functor
+                functor_content = goal_content[2].strip()
+                functor = Literal(functor_content)
+                if negation:
+                    negation.args = {functor}
+                else:
+                    goal.args = {functor}
+                # Arguments
+                arguments = []
+                arguments_content = goal_content[3].strip()
+                if arguments_content:
+                    arguments_content = re.split(',', arguments_content)
+                    for argument_content in arguments_content:
+                        argument_content = argument_content.strip()
+                        arguments.append(Literal(argument_content))
+                    functor.args = arguments
             self.expression = goal
         # Se for um conjunto de literais, popula direto a expressão
         elif isinstance(content, Literal):
@@ -212,7 +219,8 @@ class Plan:
 
     # Contexto
     def __plan_context(self, context_content):
-        return context_content
+        belief = Belief(context_content)
+        return belief.expression
 
     # Corpo
     def __plan_body(self, body_content):        
