@@ -5,14 +5,16 @@ import re
 from unify import *
 
 # Parse Literal
-def parseLiteral(content):
+def parse_literal(content):
     belief = Belief(content)
     return belief.expression
 
 # Literal
 class Literal(Expr):
-    def getFunctor(self):
-        return self.op
+    def __init__(self, functor, *args):
+        Expr.__init__(self, functor, *args)
+        self.functor = functor
+
 
 # Crenças
 class Belief:
@@ -172,7 +174,9 @@ class Body:
 
 # Ações
 class Action:
-    pass
+    def __init__(self, agent_name, actions):
+        self.agent_name = agent_name
+        self.actions = actions
     
 # Função .print()
 class Print:
@@ -187,13 +191,21 @@ class Print:
 
 # Função .send()
 class Send:
-    def __init__(self, destination, type, predicate):
+    def __init__(self, destination, message):
         self.destination = destination
+        self.message = message
+
+    def __str__(self):
+        return '.send(%s, %s)' % (self.destination, self.message)
+
+# Mensagem da função .send()
+class Message:
+    def __init__(self, type, predicate):
         self.type = type
         self.predicate = predicate
 
     def __str__(self):
-        return '.send(%s, %s, %s)' % (self.destination, self.type, self.predicate)
+        return '%s, %s' % (self.type, self.predicate)
 
 # Plano
 class Plan:
@@ -261,16 +273,19 @@ class Plan:
         send_actions = []
         # [TO-DO] Verificar no Jason como os atributos do send() são definidos
         # [TO-DO] Comentário
-        regex_send = '^.send\((\w*),(\w*),[~!?]?(\w*)\((\w*)\)\)$'
+        # regex_send = '^.send\((\w*),(\w*),[~!?]?(\w*)\((\w*)\)\)$'
+        regex_send = '^.send\((\w*),(\w*),([\(\)~\w]*)\)$'
         sends_content = re.findall(regex_send, content, re.M)
         for send_content in sends_content:
             destination = send_content[0]
             type = send_content[1]
-            predicate = Literal(send_content[2].strip())
-            if send_content[3].strip():
-                predicate.args = {Literal(send_content[3].strip())}
+            predicate = send_content[2]
+            # predicate = Literal(send_content[2].strip())
+            # if send_content[3].strip():
+                # predicate.args = {Literal(send_content[3].strip())}
 
-            send = Send(destination, type, predicate)
+            message = Message(type, predicate)
+            send = Send(destination, message)
             send_actions.append(send)
 
         return send_actions

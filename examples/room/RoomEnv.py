@@ -4,20 +4,21 @@
 from environment import *
 
 class RoomEnv(Environment):
-    ld  = parseLiteral('locked(door)')
-    nld = parseLiteral('~locked(door)')
+    ld  = parse_literal('locked(door)')
+    nld = parse_literal('~locked(door)')
 
     def __init__(self):
         Environment.__init__(self)
         self._add_percept(self.ld)
 
-    def execute_action(self, action):
+    def _execute_action(self, agent_name, action):
+        print("Agent %s is doing %s" % (agent_name, action));
         self._clear_perceptions()
 
-        if action.getFunctor() == 'lock':
-            self._add_percept(ld)
+        if action.functor == 'lock':
+            self._add_percept(self.ld)
         
-        if action.getFunctor() == 'unlock':
-            self._add_percept(nld)
+        if action.functor == 'unlock':
+            self._add_percept(self.nld)
 
         

@@ -10,56 +10,28 @@ class Environment:
         self.message_wall = {}
     
     # Executa as ações no ambiente
-    def execute(self, actions):
-        for action in actions:
+    def execute(self, intention):
+        for action in intention.actions:
             # .print()
             if isinstance(action, Print):
                 self.__print(action.content)
             # .send()
             elif isinstance(action, Send):
-                self.__send(action.destination, action.type, action.predicate)
+                self.__send(action.destination, action.message)
             # Outras ações
             else:
-                self._execute_action(action)
+                self._execute_action(intention.agent_name, action)
 
     # Imprime um conteúdo na tela
     def __print(self, content):
         print('%s' % content)
 
-    # [TO-DO] Envia para o agente de destino o predicado de acordo com o tipo
-    def __send(self, destination, type, predicate):
-        # Tell
-        if type == 'tell':
-            pass
-        # Untell
-        elif type == 'untell':
-            pass
-        # Achieve
-        elif type == 'achieve':
-            print('Implementar send de achieve para a ação %s e o agente %s' % (predicate, destination))
-        # Unachieve
-        elif type == 'unachieve':
-            pass
-        # AskOne
-        elif type == 'askOne':
-            pass
-        # AskAll
-        elif type == 'askAll':
-            pass
-        # TellHow
-        elif type == 'tellHow':
-            pass
-        # UntellHow
-        elif type == 'untellHow':
-            pass
-        # AskHow
-        elif type == 'askHow':
-            pass
-        else:
-            raise 'Parâmetro incorreto da função .send()!'
-
-        # [TO-DO] Fazer (Página 118)
-
+    # Atualiza o quadro de mensagens dos agentes
+    def __send(self, destination, message):
+        messages = self.message_wall.get(destination, [])
+        messages.append(message)
+        
+        self.message_wall[destination] = messages
 
     # Método que será sobrescrito pela classe personalizada de ambiente
     def _execute_action(self, action):

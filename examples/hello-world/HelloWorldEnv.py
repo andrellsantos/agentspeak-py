@@ -7,11 +7,11 @@ class HelloWorldEnv(Environment):
     def __init__(self):
         Environment.__init__(self)
 
-    def _execute_action(self, action):
+    def _execute_action(self, agent_name, action):
         self._add_percept(None)
         self._clear_perceptions()
 
-        if action.getFunctor() == 'aloha':
+        if action.functor == 'aloha':
             self.aloha()
 
     def aloha(self):

@@ -54,6 +54,10 @@ class Interpreter:
             else:
                 wantFinish = True
 
+            if tick > 50:
+                wantFinish = True
+
+
             # Incrementa o contador com os cliclos de interpretação
             tick += 1
 
