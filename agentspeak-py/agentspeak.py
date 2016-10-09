@@ -4,10 +4,15 @@
 import re
 from unify import *
 
+# Parse Literal
+def parseLiteral(content):
+    belief = Belief(content)
+    return belief.expression
+
 # Literal
 class Literal(Expr):
-    def content(self):
-        return Expr.op
+    def getFunctor(self):
+        return self.op
 
 # Crenças
 class Belief:

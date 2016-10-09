@@ -17,7 +17,7 @@ class Environment:
                 self.__print(action.content)
             # .send()
             elif isinstance(action, Send):
-                self.__send(action.destination, action, type, action.predicate)
+                self.__send(action.destination, action.type, action.predicate)
             # Outras ações
             else:
                 self._execute_action(action)
@@ -28,7 +28,6 @@ class Environment:
 
     # [TO-DO] Envia para o agente de destino o predicado de acordo com o tipo
     def __send(self, destination, type, predicate):
-        
         # Tell
         if type == 'tell':
             pass
@@ -37,7 +36,7 @@ class Environment:
             pass
         # Achieve
         elif type == 'achieve':
-            pass
+            print('Implementar send de achieve para a ação %s e o agente %s' % (predicate, destination))
         # Unachieve
         elif type == 'unachieve':
             pass

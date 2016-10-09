@@ -10,25 +10,17 @@ class Agent:
         self.__initial_goals = initial_goals        
         # Conjunto de planos P
         self.__plan_library = plan_library
-
-        # Os objetivos iniciais do agente são adicionado ao conjunto de eventos
-        # self.__events = copy.copy(initial_goals)
+        # Conjunto de eventos E
         self.__events = []
-        for goal in initial_goals:
-            self.__events.append(self.__belief_base.add(goal))
-
         self.__messages = []
         self.__intentions = []
     
     def run(self, perceptions = [], message_wall = {}):
         # print('Executando ciclo de raciocínio do agente %s...' % self.name)
-        # return None
         # Função de verificação de mensagens
         self.__checkMessageWall(message_wall)
-        # Função de atualização de crenças (BUF)
-        self.__beliefUpdateFunction(perceptions)
         # Função de revisão de crenças (BRF)
-        self.__beliefRevisionFunction()
+        self.__beliefRevisionFunction(perceptions)
         # Se não possuir nenhum elemento no conjunto de eventos ou conjunto de planos
         if not self.__events or not self.__plan_library:
             return None
@@ -64,28 +56,28 @@ class Agent:
     def __checkMessageWall(self, message_wall):
         pass
 
-    # [TO-DO] Fazer
-    # Função de atualização de crenças (BUF)
-    def __beliefUpdateFunction(self, perceptions):
-        # Recebe as informações provenientes do ambiente e as confronta com o seu conjunto de crenças
-        for perception in perceptions:
+    # Função de revisão de crenças (BRF)
+    def __beliefRevisionFunction(self, perceptions):
+        
+        if self.__initial_goals:
+            initial_goal = self.__initial_goals.pop()
+            self.__events.append(self.__belief_base.add(initial_goal))
+        else:
+            # Recebe as informações provenientes do ambiente e as confronta com o seu conjunto de crenças
             # Caso as percepções do ambiente sejam diferentes, o conjunto de crenças é atualizado para que
             # reflitam o novo estado do ambiente
             # Cada crença modificada gera um novo evento que é adicionado no conjunto de eventos
+            
+            # Cada literal das percepções que não está na base de conhecimento é adicionado no conjunto de eventos
+            for perception in perceptions:
+                if perception not in self.__belief_base.items:
+                    self.__events.append(self.__belief_base.add(perception))
 
-
-            # Cada literal "l" em "p" que não está em "b" é adicionado em "e"
-
-
-            # Cada literal "l" em "b" que não está em "p" é removido de "e"
-
-
-            pass
-
-    # [TO-DO] Fazer
-    # Função de revisão de crenças (BRF)
-    def __beliefRevisionFunction(self):
-        pass
+            # Cada literal da base de conhecimento que não está nas percepções é removido do conjunto de eventos
+            for belief in self.__belief_base.items:             
+                if belief not in perceptions:
+                    self.__events.append(self.__belief_base.remove(belief))
+                
 
     # Função de seleção de evento
     def _eventSelection(self):
@@ -93,7 +85,6 @@ class Agent:
         event = None
         if self.__events:
             event = self.__events.pop()
-        
         return event
 
     # Função de unificação para seleção dos planos relevantes
