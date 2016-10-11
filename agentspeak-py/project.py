@@ -6,7 +6,7 @@ import os
 import imp
 from environment import *
 from mas import *
-from parser import *
+from parser_agent import *
 
 class Project(Mas):
     def __init__(self, file_name):
@@ -36,7 +36,7 @@ class Project(Mas):
 
             for agent_name in agents_name:
                 agent_file = '%s/%s.asl'%(file_path, agent_name)
-                parser = Parser(agent_name, agent_file)
+                parser = ParserAgent(agent_name, agent_file)
                 self.agents.append(parser.agent)
 
             # Ordena os agentes

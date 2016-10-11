@@ -8,6 +8,7 @@ class HelloWorldEnv(Environment):
         Environment.__init__(self)
 
     def _execute_action(self, agent_name, action):
+        print("Agent %s is doing %s" % (agent_name, action));
         self._add_percept(None)
         self._clear_perceptions()
 

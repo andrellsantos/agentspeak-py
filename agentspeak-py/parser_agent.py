@@ -6,7 +6,7 @@ import os
 from agent import *
 from agentspeak import *
 
-class Parser:
+class ParserAgent:
     def __init__(self, agent_name, file_name):
         agent_file = open(file_name, 'r');
         self.__load(agent_name, agent_file.read())

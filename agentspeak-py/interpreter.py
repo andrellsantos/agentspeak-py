@@ -14,23 +14,19 @@ from environment import *
 from project import *
 
 class Interpreter:
-    def __init__(self):
+    def __init__(self, file_name, debug_on = False, max_ticks = None):
+        self.max_ticks = max_ticks
+        self.debug_on = debug_on
         # Carrega as informações do projeto
-        # project = Project('/home/andre/Development/Python/agentspeak-py/examples/generic/generic.maspy')
-        # project = Project('/home/andre/Development/Python/agentspeak-py/examples/hello-world/helloWorld.maspy')
-        project = Project('/home/andre/Development/Python/agentspeak-py/examples/room/room.maspy')
-        # project = Project('/home/PORTOALEGRE/13108260/DriveH/TCC/agentspeak-py/examples/generic/generic.maspy')
-        
+        project = Project(file_name)        
         # Define a lista dos agentes
         self.agents = project.agents        
         # Define o ambiente
         self.environment = project.environment        
                 
     def run(self):
-        # Número de agentes
-        # print('Iniciando a execução do interpretador para %i agente(s).' % len(self.agents))
         # Contador com os cilos de interpretação
-        tick = 0
+        ticks = 0
         # Variável de controle para parar as iterações e finalizar o interpretador
         wantFinish = False
         # Realiza as iterações enquanto que o usuário permitir
@@ -54,16 +50,8 @@ class Interpreter:
             else:
                 wantFinish = True
 
-            if tick > 50:
+            if self.max_ticks and ticks > self.max_ticks:
                 wantFinish = True
 
-
             # Incrementa o contador com os cliclos de interpretação
-            tick += 1
-
-        # print('Execução do interpretador finalizada após %i ciclos.' % tick)
-        
-        
-if __name__ == '__main__':
-    interpreter = Interpreter()
-    interpreter.run
+            ticks += 1
