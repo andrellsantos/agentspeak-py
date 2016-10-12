@@ -1,43 +1,67 @@
+import re
 import sys
 from interpreter import *
 
 if __name__ == '__main__':
 
-    # file_name = '/home/andre/Development/Python/agentspeak-py/examples/generic/generic.maspy'
-    file_name = '/home/andre/Development/Python/agentspeak-py/examples/hello-world/helloWorld.maspy'
-    # file_name = '/home/andre/Development/Python/agentspeak-py/examples/room/room.maspy'
-    # file_name = 'C:/Users/andre.santos/Downloads/agentspeak-py/examples/hello-world/helloWorld.maspy'
-    # file_name = 'C:/Users/andre.santos/Downloads/agentspeak-py/examples/room/room.maspy'
-    # file_name = '/home/PORTOALEGRE/13108260/DriveH/TCC/agentspeak-py/examples/generic/generic.maspy'
+    # Linux
+    # file = '/home/andre/Development/Python/agentspeak-py/examples/generic/generic.maspy'
+    file = '/home/andre/Development/Python/agentspeak-py/examples/hello-world/helloWorld.maspy'
+    # file = '/home/andre/Development/Python/agentspeak-py/examples/room/room.maspy'
+    # Linux - PUC
+    # file = '/home/PORTOALEGRE/13108260/DriveH/TCC/agentspeak-py/examples/generic/generic.maspy'
 
-    debug_on = False
+    # Windows
+	# file = 'C:/Users/andre.santos/Downloads/agentspeak-py/examples/hello-world/helloWorld.maspy'
+    # file = 'C:/Users/andre.santos/Downloads/agentspeak-py/examples/room/room.maspy'
+    
+    # MAC
+    # file = '/Users/mateusathaydesmartins/projects/agentspeak-py/examples/hello-world/helloWorld.maspy'
+    # file = '/Users/mateusathaydesmartins/projects/agentspeak-py/examples/room/room.maspy'
+
+    debug = False
+    metrics = False
     max_ticks = None
 
-    if sys.argv:
-        if len(sys.argv) >= 4:
-            try:
-                max_ticks = int(sys.argv[3])
-            except:
-                print('O número máximo de interações precisa ser um número (Argumento #3).')
+    for arg in sys.argv:
+        arguments = re.split('=', arg)
+        if len(arguments) == 2:
+            option = arguments[0]
+            value = arguments[1]
+            if option.lower() == 'file':
+                file = value
+            elif option.lower() == 'debug':
+                try:
+                    if value.lower() == 'true':
+                        debug = True
+                    elif value.lower() != 'false':
+                        raise
+                except:
+                    print('O argumento \'debug\' precisa ser um booleano (Ex.: debug=true).')
+                    sys.exit(1)            
+            elif option.lower() == 'metrics':
+                try:
+                    if value.lower() == 'true':
+                        metrics = True
+                    elif value.lower() != 'false':
+                        raise
+                except:
+                    print('O argumento \'metrics\' precisa ser um booleano (Ex.: metrics=true).')
+                    sys.exit(1)                    
+            elif option.lower() == 'max_ticks':
+                try:
+                    max_ticks = int(value)
+                except:
+                    print('O argumento \'max_ticks\' precisa ser um inteiro (Ex.: max_ticks=50).')
+                    sys.exit(1)
+            else:
+                print('O interpretador Agentspeak(py) permite apenas os argumentos \'file\', \'debug\', \'metrics\' e \'max_ticks\'.')
                 sys.exit(1)
 
-        if len(sys.argv) >= 3:
-            try:
-                if sys.argv[2].lower() == 'true':
-                    debug_on = True
-                elif sys.argv[2].lower() != 'false':
-                    raise
-            except:
-                print('O modo de debug precisa ser \'True\' ou \'False\' (Argumento #2).')
-                sys.exit(1)
 
-        if len(sys.argv) >= 2:
-            file_name = sys.argv[1]
-        # else:
-        #     print('Para executar o Agentspeak(py), informe os argumentos do interpretador conforme as orientações abaixo:\n' \
-        #         'Argumento #1: Caminho com o nome do arquivo.\nArgumento #2: Modo debug (\'True\'/\'False\').\nArgumento #3: '\
-        #         'Número máximo de interações do interpretador.')
-        #     sys.exit(1)
+    # if len(sys.argv) == 1:
+    #     print('O interpretador Agentspeak(py) permite apenas os argumentos \'file\', \'debug\', \'metrics\' e \'max_ticks\'.')
+    #     sys.exit(1)
 
-    interpreter = Interpreter(file_name, debug_on, max_ticks)
+    interpreter = Interpreter(file, debug, metrics, max_ticks)
     interpreter.run()

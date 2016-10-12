@@ -136,9 +136,6 @@ class Agent:
         relevant_plans = []
         theta = {}
         for plan in self.__plan_library:
-            # print(event)
-            # print(plan.triggering_event)
-            # print(unify(event, plan.triggering_event, theta))
             if unify(event, plan.triggering_event, theta) != None:
                 relevant_plans.append(plan)
 

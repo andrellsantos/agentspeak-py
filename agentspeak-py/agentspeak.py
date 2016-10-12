@@ -43,7 +43,6 @@ class Literal(Expr):
         Expr.__init__(self, functor, *args)
         self.functor = functor
 
-
 # Crenças
 class Belief:
     def __init__(self, content):

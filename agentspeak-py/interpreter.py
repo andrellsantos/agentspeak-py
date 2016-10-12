@@ -14,11 +14,12 @@ from environment import *
 from project import *
 
 class Interpreter:
-    def __init__(self, file_name, debug_on = False, max_ticks = None):
+    def __init__(self, file, debug = False, metrics = False, max_ticks = None):
+        self.debug = debug
+        self.metrics = metrics
         self.max_ticks = max_ticks
-        self.debug_on = debug_on
         # Carrega as informações do projeto
-        project = Project(file_name)        
+        project = Project(file)        
         # Define a lista dos agentes
         self.agents = project.agents        
         # Define o ambiente

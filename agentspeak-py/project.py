@@ -9,8 +9,8 @@ from mas import *
 from parser_agent import *
 
 class Project(Mas):
-    def __init__(self, file_name):
-        project_file = open(file_name, 'r');
+    def __init__(self, file):
+        project_file = open(file, 'r');
         self.__load(os.path.dirname(project_file.name), project_file.read())
         project_file.close()
 
