@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import re
 import sys
 from interpreter import *
@@ -6,8 +9,9 @@ if __name__ == '__main__':
 
     # Linux
     # file = '/home/andre/Development/Python/agentspeak-py/examples/generic/generic.maspy'
-    file = '/home/andre/Development/Python/agentspeak-py/examples/hello-world/helloWorld.maspy'
+    # file = '/home/andre/Development/Python/agentspeak-py/examples/hello-world/helloWorld.maspy'
     # file = '/home/andre/Development/Python/agentspeak-py/examples/room/room.maspy'
+    # file = '/home/andre/Development/Python/agentspeak-py/examples/open-world/openWorld.maspy'
     # Linux - PUC
     # file = '/home/PORTOALEGRE/13108260/DriveH/TCC/agentspeak-py/examples/generic/generic.maspy'
 
@@ -26,29 +30,32 @@ if __name__ == '__main__':
     for arg in sys.argv:
         arguments = re.split('=', arg)
         if len(arguments) == 2:
-            option = arguments[0]
+            option = arguments[0].lower()
             value = arguments[1]
-            if option.lower() == 'file':
+            if option != 'file':
+                value = arguments[1].lower()
+
+            if option == 'file':
                 file = value
-            elif option.lower() == 'debug':
+            elif option == 'debug':
                 try:
-                    if value.lower() == 'true':
+                    if value == 'true':
                         debug = True
-                    elif value.lower() != 'false':
+                    elif value != 'false':
                         raise
                 except:
                     print('O argumento \'debug\' precisa ser um booleano (Ex.: debug=true).')
                     sys.exit(1)            
-            elif option.lower() == 'metrics':
+            elif option == 'metrics':
                 try:
-                    if value.lower() == 'true':
+                    if value == 'true':
                         metrics = True
-                    elif value.lower() != 'false':
+                    elif value != 'false':
                         raise
                 except:
                     print('O argumento \'metrics\' precisa ser um booleano (Ex.: metrics=true).')
                     sys.exit(1)                    
-            elif option.lower() == 'max_ticks':
+            elif option == 'max_ticks':
                 try:
                     max_ticks = int(value)
                 except:

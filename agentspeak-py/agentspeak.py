@@ -55,7 +55,6 @@ class Belief:
         else:
             raise 'Parâmetro "content" declarado incorretamente na classe Belief'
 
-
     def __str__(self):
         return '%s' % self.expression
 
@@ -79,7 +78,6 @@ class Goal:
             self.expression = content
         else:
             raise 'Parâmetro "content" declarado incorretamente na classe Goal'
-
 
     def __str__(self):
         return '%s' % self.expression
@@ -116,7 +114,6 @@ class TriggeringEvent:
         # Se for um conjunto de literais, popula direto a expressão
         elif isinstance(content, Literal):
             triggering_event.args = {content}
-
         else:
             raise 'Parâmetro "content" declarado incorretamente na classe TriggeringEvent'
 
@@ -179,7 +176,8 @@ class Send:
 
 # Mensagem da função .send()
 class Message:
-    def __init__(self, type, predicate):
+    def __init__(self, sender, type, predicate):
+        self.sender = sender
         self.type = type
         self.predicate = predicate
 
@@ -211,12 +209,32 @@ class Plan:
             self.body = self.__plan_body(body)
         
     def __str__(self):
-        return '%s : %s <- %s' % (self.triggering_event, self.context, "; ".join(map(str, self.body)))
+        context = []
+        for item in self.context:
+            if item.functor == 'not':
+                item = list(item.args)
+                if item:
+                    item = item.pop()
+                    context.append('not %s' % item)
+            else:
+                context.append(item)
+
+        return '%s : %s <- %s' % (self.triggering_event, " & ".join(map(str, context)), "; ".join(map(str, self.body)))
 
     # Contexto
     def __plan_context(self, context_content):
-        belief = Belief(context_content)
-        return belief.expression
+        context_content = re.split('&', context_content)
+        plan_context = []
+        for content in context_content:
+            content = content.strip()
+            if content[0:3] == 'not':
+                context = parse_literal('not')
+                print(context)
+                context.args = {parse_literal(content[4:])}
+            else:
+                context = parse_literal(content)
+            plan_context.append(context)
+        return plan_context
 
     # Corpo
     def __plan_body(self, body_content):        
@@ -257,13 +275,10 @@ class Plan:
         sends_content = re.findall(regex_send, content, re.M)
         for send_content in sends_content:
             destination = send_content[0]
+            sender = None
             type = send_content[1]
             predicate = send_content[2]
-            # predicate = Literal(send_content[2].strip())
-            # if send_content[3].strip():
-                # predicate.args = {Literal(send_content[3].strip())}
-
-            message = Message(type, predicate)
+            message = Message(sender, type, predicate)
             send = Send(destination, message)
             send_actions.append(send)
 

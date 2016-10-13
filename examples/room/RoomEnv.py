@@ -12,7 +12,7 @@ class RoomEnv(Environment):
         self._add_percept(self.ld)
 
     def _execute_action(self, agent_name, action):
-        print("Agent %s is doing %s" % (agent_name, action));
+        print("[%s] Doing %s" % (agent_name, action));
         self._clear_perceptions()
 
         if action.functor == 'lock':

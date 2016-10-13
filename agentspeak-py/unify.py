@@ -13,56 +13,57 @@ else:
 
 from logic import *
 
-if __name__ == '__main__':    
-    theta = {}
+
+
+# Parse Literal
+def parse_literal(content):
+    literal = None
+    # Se for string, quebra ela em literais
+    if isinstance(content, str):
+        regex_literal = '^\s*([~])?(\w*)[\(\s*]?([\w,\s]*)[\s*\)]?$'
+        literal_content = re.findall(regex_literal, content)
+        if literal_content:
+            literal_content = literal_content.pop()
+            # Negation
+            negation = None
+            negation_content = literal_content[0].strip()
+            if negation_content:
+                literal = Literal(negation_content)
+            # Functor
+            functor_content = literal_content[1].strip()
+            functor = Literal(functor_content)
+            if literal:
+                literal.args = {functor}
+            else:
+                literal = functor
+            # Arguments
+            arguments = []
+            arguments_content = literal_content[2].strip()   
+            if arguments_content:
+                arguments_content = re.split(',', literal_content[2].strip())          
+                for argument_content in arguments_content:
+                    argument_content = argument_content.strip()
+                    arguments.append(Literal(argument_content))
+                functor.args = arguments
     
-    event = Expr('!', Expr('start'))
+    return literal
 
-    
-    beliefs = [Expr('!', Expr('start')), Expr('a', Expr('p')), Expr('~', Expr('a', Expr('p')))]
+# Literal
+class Literal(Expr):
+    def __init__(self, functor, *args):
+        Expr.__init__(self, functor, *args)
+        self.functor = functor
 
-    # print(event)
+if __name__ == '__main__':
+    #Literais a serem testados
+    # locked(door)
+    # ~locked(door)
+    # !start
+    # localizacao(lixeira, b)
+    # deliver(Product, Qtd)
+    # delivered(Product, Qtd, OrderId)
+    # check(locked(door))
+    # check(locked(door), ~locked(door))
+    # check(locked(door), ~locked(door), true)
 
-    # for belief in beliefs:
-    #    if unify(event, belief, theta) != None:
-        #    print(belief)
-    
-    # unify_beliefs = [unify(event, belief, theta) for belief in beliefs]
-
-    # P1 - triggering_event: +localizacao(lixo, X) : ...
-    P1_triggering_event = Expr('+', Expr('localizacao', Expr('lixo'), Expr('X')))
-    # P2 - triggering_event: +!localizacao(robo, X) : ...
-    P2_triggering_event = Expr('+', Expr('!', Expr('localizacao', Expr('robo'), Expr('X'))))
-    # P3 - triggering_event: +!localizacao(robo, X) : ...
-    P3_triggering_event = Expr('+', Expr('!', Expr('localizacao', Expr('robo'), Expr('X'))))
-    
-    plans_triggering_event = [P1_triggering_event, P2_triggering_event, P3_triggering_event]
-
-    # E: +!localizacao(robo, b)
-    event = Expr('+', Expr('!', Expr('localizacao', Expr('robo'), Expr('b'))))
-
-    # for triggering_event in plans_triggering_event:
-    #    if unify(event, triggering_event, theta) != None:
-        #    print(triggering_event)
-
-
-
-    beliefs = [
-        # Expr('locked', Expr('door'))
-        # Expr('~', Expr('locked', Expr('door')))
-        Expr('!', Expr('start')) 
-        # Expr('a', Expr('p')), 
-        # Expr('~', Expr('a', Expr('p')))
-    ]
-
-    # P1 - context: !start
-    P1_context = Expr('true')
-    # P2 - context: locked(door)
-    # P2_context = Expr('~', Expr('locked', Expr('door')))
-
-    plans_context = [P1_context]
-
-    for context in plans_context:
-        for belief in beliefs:
-            if unify(context, belief, theta) != None:
-               print(context)
+    pass

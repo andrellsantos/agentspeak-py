@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# import copy
+
+import random
 from agentspeak import *
 
 class Agent:
@@ -20,39 +21,42 @@ class Agent:
         self.__intentions = []
     
     def run(self, perceptions = [], message_wall = {}):
-        # print('Executando ciclo de raciocínio do agente %s...' % self.name)
         # Função de verificação de mensagens
         self.__checkMessageWall(message_wall)
         # Função de revisão de crenças (BRF)
         self.__beliefRevisionFunction(perceptions)
-        # print('Nome do agente: %s' % self.name)
-        # print(self.__events)
+        
         # Se não possuir nenhum elemento no conjunto de eventos ou conjunto de planos
         if not self.__events or not self.__plan_library:
             return None
-        # Função de seleção de evento
-        event = self._eventSelection()
-        # print('Evento: %s' % event)
-        # Função de unificação para seleção dos planos relevantes
-        relevant_plans = self.__unifyEvent(event)
+        
+        relevant_plans = []
+        while len(self.__events) > 0 and len(relevant_plans) == 0:
+            # Função de seleção de evento
+            event = self._eventSelection()
+            # Função de unificação para seleção dos planos relevantes
+            relevant_plans = self.__unifyEvent(event)
+        
         # Se nenhum plano relevante for selecionado
         if not relevant_plans:
             return None
+
         # Função de substituição para seleção dos planos relevantes
         applicable_plans = self.__unifyContext(relevant_plans)
+        
         # Se nenhum plano aplicável for selecionado
         if not applicable_plans:
             return None            
+        
         # Função de seleção do plano pretendido
         intended_mean = self._intendedMeansSelection(applicable_plans)
-        # print('Plano pretendido: %s' % intended_mean)
         # Função de atualização do conjunto de intenções
         self.__updateIntentions(intended_mean)
         # Função de selecão da intenção que será executada
         intention = self._intentionSelection()
 
-        # .print(belief_base)
         for action in intention.actions:
+            # Função .print(belief_base)
             if isinstance(action, Print) and not action.content:               
                 action.content = str(self.__belief_base)
 
@@ -64,15 +68,15 @@ class Agent:
         self.__messages.extend(message_wall.pop(self.name, []))
 
         for message in self.__messages:
-            self.__processMessage(message.type, message.predicate)
+            self.__processMessage(message.sender, message.type, message.predicate)
 
-    def __processMessage(self, type, predicate):
+    def __processMessage(self, sender, type, predicate):
         # Tell
         if type == 'tell':
-            pass
+            raise 'O tipo \'tell\' está pendente de implementação na função .send()!'
         # Untell
         elif type == 'untell':
-            pass
+            raise 'O tipo \'untell\' está pendente de implementação na função .send()!'
         # Achieve
         elif type == 'achieve':
             goal = Goal('!' + predicate)
@@ -85,21 +89,21 @@ class Agent:
             self.__events.append(triggering_event.expression)
         # AskOne
         elif type == 'askOne':
-            pass
+            raise 'O tipo \'askOne\' está pendente de implementação na função .send()!'
         # AskAll
         elif type == 'askAll':
-            pass
+            raise 'O tipo \'askAll\' está pendente de implementação na função .send()!'
         # TellHow
         elif type == 'tellHow':
-            pass
+            raise 'O tipo \'tellHow\' está pendente de implementação na função .send()!'
         # UntellHow
         elif type == 'untellHow':
-            pass
+            raise 'O tipo \'untellHow\' está pendente de implementação na função .send()!'
         # AskHow
         elif type == 'askHow':
-            pass
+            raise 'O tipo \'askHow\' está pendente de implementação na função .send()!'
         else:
-            raise 'Parâmetro incorreto da função .send()!'
+            raise 'Tipo incorreto da função .send()!'
 
         # [TO-DO] Fazer (Página 118)
 
@@ -111,15 +115,22 @@ class Agent:
         # Cada crença modificada gera um novo evento que é adicionado no conjunto de eventos
         
         # Cada literal das percepções que não está na base de conhecimento é adicionado no conjunto de eventos
+        remove_list = []
         for perception in perceptions:
             if perception not in self.__belief_base.items:
-                self.__events.append(self.__belief_base.add(perception))
+                remove_list.append(perception)
+
+        for item in remove_list:
+            self.__events.append(self.__belief_base.add(item))
 
         # Cada literal da base de conhecimento que não está nas percepções é removido do conjunto de eventos
+        remove_list = []
         for belief in self.__belief_base.items:             
             if belief not in perceptions:
-                self.__belief_base.remove(belief)
-                # self.__events.append(self.__belief_base.remove(belief))
+                remove_list.append(belief)
+
+        for item in remove_list:
+            self.__events.append(self.__belief_base.remove(item))
                 
 
     # Função de seleção de evento
@@ -146,13 +157,34 @@ class Agent:
         theta = {}
         applicable_plans = []
         for plan in relevant_plans:
-            if plan.context.functor == 'true':
-                applicable_plans.append(plan)
-            else:
-                for belief in self.__belief_base.items:
-                    if unify(plan.context, belief, theta) != None:
-                        applicable_plans.append(plan)
+            has_breaked = False
+            for context in plan.context:
+                has_unification = False
+                if has_breaked:
+                    break
 
+                if context.functor == 'true':
+                    has_unification = True
+                else:
+                    if context.functor == 'not':
+                        context = list(context.args)
+                        if context:
+                            has_unification = True
+                            context = context.pop()
+                            for belief in self.__belief_base.items:
+                                if unify(context, belief, theta) != None:
+                                    has_breaked = True
+                                    break
+
+                    else: 
+                        for belief in self.__belief_base.items:    
+                            if unify(context, belief, theta) != None:
+                                has_unification = True
+                                break
+            
+            if has_unification:
+                applicable_plans.append(plan)
+                
         return applicable_plans
 
     # Função de seleção do plano pretendido
@@ -160,7 +192,8 @@ class Agent:
         # Escolhe um único plano aplicável do conjunto de planos aplicáveis
         applicable_plan = None
         if applicable_plans:
-            applicable_plan = applicable_plans.pop()
+            # applicable_plan = applicable_plans.pop()
+            applicable_plan = random.choice(applicable_plans)
         
         return applicable_plan
 
@@ -174,7 +207,8 @@ class Agent:
         # Escolhe uma única intenção do conjunto de intenções
         intention = None
         if self.__intentions:
-            intention = Action(self.name, self.__intentions.pop())
+            intention = self.__intentions.pop()
+            intention = Action(self.name, intention)
         
         return intention
         

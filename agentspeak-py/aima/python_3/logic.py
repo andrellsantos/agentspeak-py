@@ -145,8 +145,8 @@ def is_symbol(s):
 
 
 def is_var_symbol(s):
-    "A logic variable symbol is an initial-lowercase string."
-    return is_symbol(s) and s[0].islower()
+    "A logic variable symbol is an initial-uppercase string."
+    return is_symbol(s) and s[0].isupper()
 
 
 # def is_prop_symbol(s):
@@ -796,8 +796,8 @@ def unify(x, y, s):
 
 
 def is_variable(x):
-    "A variable is an Expr with no args and a lowercase symbol as the op."
-    return isinstance(x, Expr) and not x.args and x.op[0].islower()
+    "A variable is an Expr with no args and a uppercase symbol as the op."
+    return isinstance(x, Expr) and not x.args and x.op[0].isupper()
 
 
 def unify_var(var, x, s):

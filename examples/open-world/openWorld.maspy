@@ -3,4 +3,4 @@ openWorld:
         OpenWorldEnv
     
     agents = 
-        [openWorld]
+        [openWorld, openWorld1, openWorld2]

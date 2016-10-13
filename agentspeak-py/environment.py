@@ -14,17 +14,18 @@ class Environment:
         for action in intention.actions:
             # .print()
             if isinstance(action, Print):
-                self.__print(action.content)
+                self.__print(intention.agent_name, action.content)
             # .send()
             elif isinstance(action, Send):
+                action.message.sender = intention.agent_name
                 self.__send(action.destination, action.message)
             # Outras ações
             else:
                 self._execute_action(intention.agent_name, action)
 
     # Imprime um conteúdo na tela
-    def __print(self, content):
-        print('%s' % content)
+    def __print(self, agent_name, content):
+        print('[%s] %s' % (agent_name, content))
 
     # Atualiza o quadro de mensagens dos agentes
     def __send(self, destination, message):
