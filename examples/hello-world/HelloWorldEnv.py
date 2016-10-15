@@ -12,8 +12,11 @@ class HelloWorldEnv(Environment):
         self._add_percept(None)
         self._clear_perceptions()
 
-        if action.functor == 'aloha':
-            self.aloha()
+        print(str(action))
+        eval(str(action))
 
-    def aloha(self):
-        print('Aloha HelloWorldEnv!')
+def aloha():
+    print('Aloha HelloWorldEnv!')
+
+def mahalo(argument):
+    print('Mahaloing with %s' + argument)

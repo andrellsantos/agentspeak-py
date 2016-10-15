@@ -4,6 +4,14 @@
 import re
 from unify import *
 
+# Literal
+class Literal(Expr):
+    def __init__(self, functor, *args):
+        Expr.__init__(self, functor, *args)
+        self.functor = functor
+        self.arguments = args
+
+
 # Parse Literal
 def parse_literal(content):
     literal = None
@@ -14,22 +22,19 @@ def parse_literal(content):
         if literal_content:
             literal_content = literal_content.pop()
             # Negation
-            negation = None
-            negation_content = literal_content[0].strip()
-            if negation_content:
-                literal = Literal(negation_content)
+            if literal_content[0].strip():
+                literal = Literal(literal_content[0].strip())
             # Functor
-            functor_content = literal_content[1].strip()
-            functor = Literal(functor_content)
+            functor = Literal(literal_content[1].strip())
             if literal:
                 literal.args = {functor}
             else:
                 literal = functor
             # Arguments
             arguments = []
-            arguments_content = literal_content[2].strip()   
+            arguments_content = literal_content[2].strip()
             if arguments_content:
-                arguments_content = re.split(',', literal_content[2].strip())          
+                arguments_content = re.split(',', arguments_content)          
                 for argument_content in arguments_content:
                     argument_content = argument_content.strip()
                     arguments.append(Literal(argument_content))
@@ -37,47 +42,40 @@ def parse_literal(content):
     
     return literal
 
-# Literal
-class Literal(Expr):
-    def __init__(self, functor, *args):
-        Expr.__init__(self, functor, *args)
-        self.functor = functor
-
 # Crenças
 class Belief:
     def __init__(self, content):
-        # Se for string, quebra ela em literais
         if isinstance(content, str):
             self.expression = parse_literal(content)
-        # Se for um conjunto de literais, popula direto a expressão
-        elif isinstance(content, Literal):
-            self.expression = content
         else:
             raise 'Parâmetro "content" declarado incorretamente na classe Belief'
 
     def __str__(self):
         return '%s' % self.expression
 
+
 # Objetivos
 class Goal:
     def __init__(self, content):
-        # Se for string, quebra ela em literais
         if isinstance(content, str):
-            goal = None
-            regex_goals = '^\s*([\!\?])(.*)\s*$'
-            goal_content = re.findall(regex_goals, content)
-            if goal_content:
-                goal_content = goal_content.pop()
-                # Type
-                type_content = goal_content[0].strip()
-                goal = Literal(type_content)
-                goal.args = {parse_literal(goal_content[1].strip())}
-            self.expression = goal
-        # Se for um conjunto de literais, popula direto a expressão
-        elif isinstance(content, Literal):
-            self.expression = content
+            self.type, self.content, self.expression = self.__parse(content)
         else:
             raise 'Parâmetro "content" declarado incorretamente na classe Goal'
+
+    def __parse(self, content):
+        type = None
+        goal = None
+        expression = None
+        regex_goals = '^\s*([\!\?])(.*)\s*$'
+        goal_content = re.findall(regex_goals, content)
+        if goal_content:
+            goal_content = goal_content.pop()
+            type = goal_content[0].strip()
+            goal = parse_literal(goal_content[1].strip())
+            expression = Literal(type)
+            expression.args = [goal]
+
+        return type, goal, expression
 
     def __str__(self):
         return '%s' % self.expression
@@ -85,35 +83,31 @@ class Goal:
 # Eventos ativadores do plano - Podem ser crenças ou objetivos
 class TriggeringEvent:
     def __init__(self, type, content):
+        self.type = type
         triggering_event = None
-        # Se for string, quebra ela em literais
+        
         if isinstance(type, str):
             triggering_event = Literal(type)
-        # Se for um conjunto de literais, popula direto a expressão
-        elif isinstance(type, Literal):
-            triggering_event = type
         else:
             raise 'Parâmetro "type" declarado incorretamente na classe TriggeringEvent'
 
-        # Se for string, quebra ela em literais
         if isinstance(content, str):
             # Verifica se o evento ativador é uma crença
-            regex_beliefs = '^\s*([~])?(\w*)\(\s*(.*)\s*\)\s*$'
-            belief_content = re.findall(regex_beliefs, content)
-            if belief_content:
-                belief = Belief(content)
-                triggering_event.args = {belief.expression}
-
+            belief = Belief(content)
+            if belief.expression:
+                triggering_event.args = [belief.expression]
+        
             # Verifica se o evento ativador é um objetivo
-            regex_goals = '^\s*([\!\?])([~])?(\w*)\(?\s*([\w,\s]*)\s*\)?\s*$'
-            goal_content = re.findall(regex_goals, content)
-            if goal_content:
-                goal = Goal(content)
-                triggering_event.args = {goal.expression}
+            goal = Goal(content)
+            if goal.expression:
+                triggering_event.args = [goal.expression]
 
-        # Se for um conjunto de literais, popula direto a expressão
         elif isinstance(content, Literal):
-            triggering_event.args = {content}
+            triggering_event.args = [content]
+        elif isinstance(content, Belief):
+            triggering_event.args = [content.expression]
+        elif isinstance(content, Goal):
+            triggering_event.args = [content.expression]
         else:
             raise 'Parâmetro "content" declarado incorretamente na classe TriggeringEvent'
 
@@ -127,14 +121,14 @@ class BeliefBase:
     def __init__(self, beliefs = []):
         self.items = beliefs
 
-    def add(self, predicate):
-        self.items.append(predicate)
-        triggering_event = TriggeringEvent('+', predicate)
+    def add(self, literal):
+        self.items.append(literal)
+        triggering_event = TriggeringEvent('+', literal)
         return triggering_event.expression
     
-    def remove(self, predicate):
-        self.items.remove(predicate)
-        triggering_event = TriggeringEvent('-', predicate)
+    def remove(self, literal):
+        self.items.remove(literal)
+        triggering_event = TriggeringEvent('-', literal)
         return triggering_event.expression
 
     def __str__(self):
@@ -176,37 +170,44 @@ class Send:
 
 # Mensagem da função .send()
 class Message:
-    def __init__(self, sender, type, predicate):
+    def __init__(self, sender, type, literal):
         self.sender = sender
         self.type = type
-        self.predicate = predicate
+        self.literal = literal
 
     def __str__(self):
-        return '%s, %s' % (self.type, self.predicate)
+        return '%s, %s' % (self.type, self.literal)
 
 # Plano
 class Plan:
-    def __init__(self, type, triggering_event, context, body):
-        # Eventos ativadores
-        self.triggering_event = None
-        # Se for string, quebra ela em literais
-        if isinstance(triggering_event, str):
-            triggering_event = TriggeringEvent(type, triggering_event)
-            self.triggering_event = triggering_event.expression
-        # Se for um conjunto de literais, popula direto a expressão
-        elif isinstance(triggering_event, Literal):
-            self.triggering_event = Literal(type)
-            self.triggering_event.args = {triggering_event}
+    def __init__(self, content):
+        if isinstance(content, str):
+            self.content = content
+            self.triggering_event, self.context, self.body = self.__parse(content)
+        else:
+            raise 'Parâmetro "content" declarado incorretamente na classe Plan'
 
-        # Contexto
-        self.context = None
-        if isinstance(context, str):
-            self.context = self.__plan_context(context)
+    def __parse(self, content):
+        triggering_event = None
+        context = None
+        body = None
+        # Plans: [+|-] [event(terms)] : [context] <- [body]
+        regex_plans = '^\s*([+-])(.*)\s*:\s*(.*)\s*<-\s*(.*)\s*$'
+        plan_content = re.findall(regex_plans, content, re.M)
+        if plan_content:
+            plan_content = plan_content.pop()
+            type_content = plan_content[0].strip()
+            triggering_event_content = plan_content[1].strip()
+            context_content = plan_content[2].strip()
+            body_content = plan_content[3].strip()
+            # Eventos ativadores
+            triggering_event = TriggeringEvent(type_content, triggering_event_content)
+            # Contexto
+            context = self.__plan_context(context_content)
+            # Corpo
+            body = self.__plan_body(body_content)
 
-        # Corpo
-        self.body = None
-        if isinstance(body, str):
-            self.body = self.__plan_body(body)
+        return triggering_event, context, body
         
     def __str__(self):
         context = []
@@ -229,8 +230,7 @@ class Plan:
             content = content.strip()
             if content[0:3] == 'not':
                 context = parse_literal('not')
-                print(context)
-                context.args = {parse_literal(content[4:])}
+                context.args = [parse_literal(content[4:])]
             else:
                 context = parse_literal(content)
             plan_context.append(context)
@@ -277,8 +277,8 @@ class Plan:
             destination = send_content[0]
             sender = None
             type = send_content[1]
-            predicate = send_content[2]
-            message = Message(sender, type, predicate)
+            literal = send_content[2]
+            message = Message(sender, type, literal)
             send = Send(destination, message)
             send_actions.append(send)
 
@@ -293,7 +293,17 @@ class Plan:
         for action_content in actions_content:
             action = Literal(action_content[0].strip())
             if action_content[1].strip():
-                action.args = {Literal(action_content[1].strip())}
+                action.args = [Literal(action_content[1].strip())]
             other_actions.append(action)
 
         return other_actions
+
+
+if __name__ == '__main__':
+    plan = Plan('+!start : true <- aloha; .print("Formas de imprimir a base de conhecimento:"); .print(); .print("").')
+    print(plan.triggering_event.type)
+    print(plan.triggering_event.content)
+    print(plan.context)
+    print(plan.body)
+
+    pass

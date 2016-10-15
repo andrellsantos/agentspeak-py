@@ -54,22 +54,18 @@ class ParserAgent:
         goals_content = re.findall(regex_goals, agent_content, re.M)
         for goal_content in goals_content:
             goal = Goal(goal_content)
-            goals.append(goal.expression)
+            goals.append(goal)
 
         return goals
     
     # Planos
     def __plans(self, agent_content):
         plans = []
-        # Plans: [+|-] [event(terms)] : [context] <- [body]
-        regex_plans = '^\s*([+-])(.*)\s*:\s*(.*)\s*<-\s*(.*)\s*\.\s*$'
+        # Plans: [+|- event(terms)] : [context] <- [body]
+        regex_plans = '\s*(.*\s*:\s*.*\s*<-\s*.*)\.\s*$$'
         plans_content = re.findall(regex_plans, agent_content, re.M)
         for plan_content in plans_content:
-            type = plan_content[0].strip()
-            triggering_event = plan_content[1].strip()
-            context = plan_content[2].strip()
-            body = plan_content[3].strip()
-            plan = Plan(type, triggering_event, context, body)
+            plan = Plan(plan_content)
             plans.append(plan)
 
         return plans

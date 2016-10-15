@@ -1,5 +1,5 @@
 /* Project Name */
 helloWorld:
     // List of agents
-    agents = [helloWorld, helloWorld1, helloWorld2] // Use ',' when you need multiple agents
+    agents = [helloWorld]//, helloWorld1, helloWorld2] // Use ',' when you need multiple agents
     environment = HelloWorldEnv

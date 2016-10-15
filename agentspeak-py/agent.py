@@ -27,9 +27,14 @@ class Agent:
         self.__beliefRevisionFunction(perceptions)
         
         # Se não possuir nenhum elemento no conjunto de eventos ou conjunto de planos
-        if not self.__events or not self.__plan_library:
+        if not self.__events:
+            # print('[Warning] Não foi encontrado nenhum evento para o agente %s.' % self.name)
             return None
-        
+
+        if not self.__plan_library:
+            # print('[Warning] Não foi encontrado nenhum plano para o agente %s.' % self.name)
+            return None
+
         relevant_plans = []
         while len(self.__events) > 0 and len(relevant_plans) == 0:
             # Função de seleção de evento
@@ -39,6 +44,7 @@ class Agent:
         
         # Se nenhum plano relevante for selecionado
         if not relevant_plans:
+            # print('[Warning] Não foi encontrado nenhum plano relevante para o agente %s.' % self.name)
             return None
 
         # Função de substituição para seleção dos planos relevantes
@@ -46,6 +52,7 @@ class Agent:
         
         # Se nenhum plano aplicável for selecionado
         if not applicable_plans:
+            # print('[Warning] Não foi encontrado nenhum plano aplicável para o agente %s.' % self.name)
             return None            
         
         # Função de seleção do plano pretendido
@@ -68,9 +75,9 @@ class Agent:
         self.__messages.extend(message_wall.pop(self.name, []))
 
         for message in self.__messages:
-            self.__processMessage(message.sender, message.type, message.predicate)
+            self.__processMessage(message.sender, message.type, message.literal)
 
-    def __processMessage(self, sender, type, predicate):
+    def __processMessage(self, sender, type, literal):
         # Tell
         if type == 'tell':
             raise 'O tipo \'tell\' está pendente de implementação na função .send()!'
@@ -79,12 +86,12 @@ class Agent:
             raise 'O tipo \'untell\' está pendente de implementação na função .send()!'
         # Achieve
         elif type == 'achieve':
-            goal = Goal('!' + predicate)
+            goal = Goal('!' + literal)
             triggering_event = TriggeringEvent('+', goal.expression)
             self.__events.append(triggering_event.expression)
         # Unachieve
         elif type == 'unachieve':
-            goal = Goal('!' + predicate)
+            goal = Goal('!' + literal)
             triggering_event = TriggeringEvent('-', goal.expression)
             self.__events.append(triggering_event.expression)
         # AskOne
@@ -147,12 +154,18 @@ class Agent:
         relevant_plans = []
         theta = {}
         for plan in self.__plan_library:
-            if unify(event, plan.triggering_event, theta) != None:
+            unification = unify(event, plan.triggering_event.expression, theta) 
+            if unification != None:
+                # self.substitution(plan, unification) - Return plan with substitution
                 relevant_plans.append(plan)
+        # [TO-DO] Fazer a substituição das variáveis
+        # !start2(andre).
+        # +!start2(A) : true <- mahalo(A).
 
         return relevant_plans
 
     # Função de substituição para seleção dos planos relevantes
+    # [TO-DO] Dividir em uma função para obter o 'relevantUnifier'
     def __unifyContext(self, relevant_plans):
         theta = {}
         applicable_plans = []
