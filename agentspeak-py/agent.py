@@ -15,7 +15,7 @@ class Agent:
         # Adiciona os objetivos iniciais no conjunto de eventos E
         for initial_goal in initial_goals:
             triggering_event = TriggeringEvent('+', initial_goal)
-            self.__events.append(triggering_event.expression)
+            self.__events.append(triggering_event.literal)
 
         self.__messages = []
         self.__intentions = []
@@ -87,13 +87,13 @@ class Agent:
         # Achieve
         elif type == 'achieve':
             goal = Goal('!' + literal)
-            triggering_event = TriggeringEvent('+', goal.expression)
-            self.__events.append(triggering_event.expression)
+            triggering_event = TriggeringEvent('+', goal)
+            self.__events.append(triggering_event.literal)
         # Unachieve
         elif type == 'unachieve':
             goal = Goal('!' + literal)
-            triggering_event = TriggeringEvent('-', goal.expression)
-            self.__events.append(triggering_event.expression)
+            triggering_event = TriggeringEvent('-', goal)
+            self.__events.append(triggering_event.literal)
         # AskOne
         elif type == 'askOne':
             raise 'O tipo \'askOne\' está pendente de implementação na função .send()!'
@@ -154,7 +154,7 @@ class Agent:
         relevant_plans = []
         theta = {}
         for plan in self.__plan_library:
-            unification = unify(event, plan.triggering_event.expression, theta) 
+            unification = unify(event, plan.triggering_event.literal, theta) 
             if unification != None:
                 # self.substitution(plan, unification) - Return plan with substitution
                 relevant_plans.append(plan)

@@ -42,7 +42,7 @@ class ParserAgent:
         beliefs_content = re.findall(regex_beliefs, agent_content, re.M)
         for belief_content in beliefs_content:
             belief = Belief(belief_content)
-            beliefs.append(belief.expression)
+            beliefs.append(belief)
 
         return beliefs
 

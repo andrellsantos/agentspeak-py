@@ -46,39 +46,39 @@ def parse_literal(content):
 class Belief:
     def __init__(self, content):
         if isinstance(content, str):
-            self.expression = parse_literal(content)
+            self.literal = parse_literal(content)
         else:
             raise 'Parâmetro "content" declarado incorretamente na classe Belief'
 
     def __str__(self):
-        return '%s' % self.expression
+        return '%s' % self.literal
 
 
 # Objetivos
 class Goal:
     def __init__(self, content):
         if isinstance(content, str):
-            self.type, self.content, self.expression = self.__parse(content)
+            self.type, self.content, self.literal = self.__parse(content)
         else:
             raise 'Parâmetro "content" declarado incorretamente na classe Goal'
 
     def __parse(self, content):
         type = None
         goal = None
-        expression = None
+        literal = None
         regex_goals = '^\s*([\!\?])(.*)\s*$'
         goal_content = re.findall(regex_goals, content)
         if goal_content:
             goal_content = goal_content.pop()
             type = goal_content[0].strip()
             goal = parse_literal(goal_content[1].strip())
-            expression = Literal(type)
-            expression.args = [goal]
+            literal = Literal(type)
+            literal.args = [goal]
 
-        return type, goal, expression
+        return type, goal, literal
 
     def __str__(self):
-        return '%s' % self.expression
+        return '%s' % self.literal
 
 # Eventos ativadores do plano - Podem ser crenças ou objetivos
 class TriggeringEvent:
@@ -94,27 +94,27 @@ class TriggeringEvent:
         if isinstance(content, str):
             # Verifica se o evento ativador é uma crença
             belief = Belief(content)
-            if belief.expression:
-                triggering_event.args = [belief.expression]
+            if belief.literal:
+                triggering_event.args = [belief.literal]
         
             # Verifica se o evento ativador é um objetivo
             goal = Goal(content)
-            if goal.expression:
-                triggering_event.args = [goal.expression]
+            if goal.literal:
+                triggering_event.args = [goal.literal]
 
         elif isinstance(content, Literal):
             triggering_event.args = [content]
         elif isinstance(content, Belief):
-            triggering_event.args = [content.expression]
+            triggering_event.args = [content.literal]
         elif isinstance(content, Goal):
-            triggering_event.args = [content.expression]
+            triggering_event.args = [content.literal]
         else:
             raise 'Parâmetro "content" declarado incorretamente na classe TriggeringEvent'
 
-        self.expression = triggering_event
+        self.literal = triggering_event
 
     def __str__(self):
-        return '%s' % self.expression
+        return '%s' % self.literal
 
 # Base de Crenças
 class BeliefBase:
@@ -124,29 +124,21 @@ class BeliefBase:
     def add(self, literal):
         self.items.append(literal)
         triggering_event = TriggeringEvent('+', literal)
-        return triggering_event.expression
+        return triggering_event.literal
     
     def remove(self, literal):
         self.items.remove(literal)
         triggering_event = TriggeringEvent('-', literal)
-        return triggering_event.expression
+        return triggering_event.literal
 
     def __str__(self):
         return '\n'.join(str(belief) for belief in self.items) 
 
-# Contexto do plano - Podem ser crenças ou 'true'
-class Context:
-   pass
-
-# Corpo do plano - Pode ser objetivos ou ações
-class Body:
-   pass
-
 # Ações
 class Action:
-    def __init__(self, agent_name, actions):
+    def __init__(self, agent_name, action):
         self.agent_name = agent_name
-        self.actions = actions
+        self.action = action
     
 # Função .print()
 class Print:
