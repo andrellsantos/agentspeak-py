@@ -7,16 +7,16 @@ class HelloWorldEnv(Environment):
     def __init__(self):
         Environment.__init__(self)
 
-    def _execute_action(self, agent_name, action):
-        print("Agent %s is doing %s" % (agent_name, action));
-        self._add_percept(None)
-        self._clear_perceptions()
+    def execute_action(self, agent_name, action):
+        # self.agent_name = agent_name
+        # print('[%s] Doing %s' % (agent_name, action));
+        # self.add_percept(None)
+        # self.clear_perceptions()
 
-        print(str(action))
-        eval(str(action))
+        eval('%s()' % action)
 
 def aloha():
     print('Aloha HelloWorldEnv!')
 
 def mahalo(argument):
-    print('Mahaloing with %s' + argument)
+    print('Mahaloing with %s' % argument)

@@ -16,8 +16,9 @@ if __name__ == '__main__':
     # file = '/home/PORTOALEGRE/13108260/DriveH/TCC/agentspeak-py/examples/generic/generic.maspy'
 
     # Windows
-	# file = 'C:/Users/andre.santos/Downloads/agentspeak-py/examples/hello-world/helloWorld.maspy'
-    # file = 'C:/Users/andre.santos/Downloads/agentspeak-py/examples/room/room.maspy'
+    file = 'C:/Desenvolvimento/python/agentspeak-py/examples/hello-world/helloWorld.maspy'
+    # file = 'C:/Desenvolvimento/python/agentspeak-py/examples/room/room.maspy'
+    # file = 'C:/Desenvolvimento/python/agentspeak-py/examples/open-world/openWorld.maspy'
     
     # MAC
     # file = '/Users/mateusathaydesmartins/projects/agentspeak-py/examples/hello-world/helloWorld.maspy'
@@ -34,7 +35,7 @@ if __name__ == '__main__':
             value = arguments[1]
             if option != 'file':
                 value = arguments[1].lower()
-
+    
             if option == 'file':
                 file = value
             elif option == 'debug':

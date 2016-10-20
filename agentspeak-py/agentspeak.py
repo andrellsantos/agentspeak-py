@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from unify import *
+from unifier import *
 
 # Literal
 class Literal(Expr):
@@ -134,12 +134,24 @@ class BeliefBase:
     def __str__(self):
         return '\n'.join(str(belief) for belief in self.items) 
 
+# Eventos
+class Event:
+    def __init__(self, triggering_event, intention):
+        self.triggering_event = triggering_event
+        self.intention = intention
+        
+    def __str__(self):
+        return '%s : %s' % (self.triggering_event, self.intention)
+    
 # Ações
 class Action:
-    def __init__(self, agent_name, action):
+    def __init__(self, agent_name, literal):
         self.agent_name = agent_name
-        self.action = action
-    
+        self.literal = literal
+        
+    def __str__(self):
+        return self.literal
+
 # Função .print()
 class Print:
     def __init__(self, content):

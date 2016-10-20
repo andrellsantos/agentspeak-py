@@ -9,16 +9,16 @@ class RoomEnv(Environment):
 
     def __init__(self):
         Environment.__init__(self)
-        self._add_percept(self.ld)
+        self.add_percept(self.ld)
 
-    def _execute_action(self, agent_name, action):
+    def execute_action(self, agent_name, action):
         print("[%s] Doing %s" % (agent_name, action));
-        self._clear_perceptions()
+        self.clear_perceptions()
 
         if action.functor == 'lock':
-            self._add_percept(self.ld)
+            self.add_percept(self.ld)
         
         if action.functor == 'unlock':
-            self._add_percept(self.nld)
+            self.add_percept(self.nld)
 
         

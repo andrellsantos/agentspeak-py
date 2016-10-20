@@ -13,25 +13,25 @@ class OpenWorldEnv(Environment):
     def __init__(self):
         Environment.__init__(self)
         
-        self._add_percept(self.pa)
-        self._add_percept(self.pb)
-        self._add_percept(self.npa)
-        self._add_percept(self.npb)
+        self.add_percept(self.pa)
+        self.add_percept(self.pb)
+        self.add_percept(self.npa)
+        self.add_percept(self.npb)
             
-    def _execute_action(self, agent_name, action):
-        self._clear_perceptions()
+    def execute_action(self, agent_name, action):
+        self.clear_perceptions()
 
         if random.choice([True, False]):            
-            self._add_percept(self.pa)
+            self.add_percept(self.pa)
 
         if random.choice([True, False]):   
-            self._add_percept(self.pb)
+            self.add_percept(self.pb)
             
         if random.choice([True, False]):   
-            self._add_percept(self.npa)
+            self.add_percept(self.npa)
             
         if random.choice([True, False]):   
-            self._add_percept(self.npb)
+            self.add_percept(self.npb)
 
 
         

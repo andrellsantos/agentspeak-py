@@ -23,8 +23,9 @@ class Interpreter:
         # Define a lista dos agentes
         self.agents = project.agents        
         # Define o ambiente
-        self.environment = project.environment        
-                
+        self.environment = project.environment
+        
+                        
     def run(self):
         # Contador com os cilos de interpretação
         ticks = 0
@@ -34,8 +35,6 @@ class Interpreter:
         while not wantFinish:
             # Pilha de ações provenientes do raciocínio dos agentes
             actions = []        
-            # Atualiza as percepções de todos os agentes
-            perceptions = []
 
             # Executa o ciclo de raciocínio dos agentes
             for agent in self.agents:

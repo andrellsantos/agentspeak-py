@@ -3,6 +3,8 @@
 
 from agentspeak import *
 
+# __all__ = ['execute', 'execute_action', 'clear_perceptions', 'add_perception']
+
 class Environment:
     def __init__(self):
         # Percepções do ambiente
@@ -12,15 +14,15 @@ class Environment:
     # Executa as ações no ambiente
     def execute(self, action):
         # .print()
-        if isinstance(action, Print):
-            self.__print(intention.agent_name, action.content)
+        if isinstance(action.literal, Print):
+            self.__print(action.agent_name, action.literal.content)
         # .send()
-        elif isinstance(action, Send):
-            action.message.sender = intention.agent_name
-            self.__send(action.destination, action.message)
+        elif isinstance(action.literal, Send):
+            action.literal.message.sender = action.agent_name
+            self.__send(action.literal.destination, action.literal.message)
         # Outras ações
         else:
-            self._execute_action(intention.agent_name, action)
+            self.execute_action(action.agent_name, action.literal)
 
     # Imprime um conteúdo na tela
     def __print(self, agent_name, content):
@@ -34,13 +36,13 @@ class Environment:
         self.message_wall[destination] = messages
 
     # Método que será sobrescrito pela classe personalizada de ambiente
-    def _execute_action(self, action):
+    def execute_action(self, agent_name, action):
         pass
 
-    def _add_percept(self, literal):
+    def add_percept(self, literal):
         self.perceptions.append(literal)
         
-    def _clear_perceptions(self):
+    def clear_perceptions(self):
         self.perceptions = []
 
     def __str__(self):

@@ -9,5 +9,6 @@
 /* Plans */
 
 +!start : true <- aloha; .print("Formas de imprimir a base de conhecimento:"); .print(); .print("").
+//+!start : true <- !start2.
 
 +!start2(A) : true <- mahalo(A).
