@@ -4,44 +4,6 @@
 import re
 from unifier import *
 
-# Literal
-class Literal(Expr):
-    def __init__(self, functor, *args):
-        Expr.__init__(self, functor, *args)
-        self.functor = functor
-        self.arguments = args
-
-
-# Parse Literal
-def parse_literal(content):
-    literal = None
-    # Se for string, quebra ela em literais
-    if isinstance(content, str):
-        regex_literal = '^\s*([~])?(\w*)[\(\s*]?([\w,\s]*)[\s*\)]?$'
-        literal_content = re.findall(regex_literal, content)
-        if literal_content:
-            literal_content = literal_content.pop()
-            # Negation
-            if literal_content[0].strip():
-                literal = Literal(literal_content[0].strip())
-            # Functor
-            functor = Literal(literal_content[1].strip())
-            if literal:
-                literal.args = {functor}
-            else:
-                literal = functor
-            # Arguments
-            arguments = []
-            arguments_content = literal_content[2].strip()
-            if arguments_content:
-                arguments_content = re.split(',', arguments_content)          
-                for argument_content in arguments_content:
-                    argument_content = argument_content.strip()
-                    arguments.append(Literal(argument_content))
-                functor.args = arguments
-    
-    return literal
-
 # Crenças
 class Belief:
     def __init__(self, content):
@@ -84,10 +46,10 @@ class Goal:
 class TriggeringEvent:
     def __init__(self, type, content):
         self.type = type
-        triggering_event = None
+        self.literal = None
         
         if isinstance(type, str):
-            triggering_event = Literal(type)
+            self.literal = Literal(type)
         else:
             raise 'Parâmetro "type" declarado incorretamente na classe TriggeringEvent'
 
@@ -95,23 +57,23 @@ class TriggeringEvent:
             # Verifica se o evento ativador é uma crença
             belief = Belief(content)
             if belief.literal:
-                triggering_event.args = [belief.literal]
+                self.content = belief.literal
         
             # Verifica se o evento ativador é um objetivo
             goal = Goal(content)
             if goal.literal:
-                triggering_event.args = [goal.literal]
+                self.content = goal.literal
 
         elif isinstance(content, Literal):
-            triggering_event.args = [content]
+            self.content = content
         elif isinstance(content, Belief):
-            triggering_event.args = [content.literal]
+            self.content = content.literal
         elif isinstance(content, Goal):
-            triggering_event.args = [content.literal]
+            self.content = content.literal
         else:
             raise 'Parâmetro "content" declarado incorretamente na classe TriggeringEvent'
-
-        self.literal = triggering_event
+        
+        self.literal.args = [self.content]
 
     def __str__(self):
         return '%s' % self.literal
@@ -124,12 +86,12 @@ class BeliefBase:
     def add(self, literal):
         self.items.append(literal)
         triggering_event = TriggeringEvent('+', literal)
-        return triggering_event.literal
+        return triggering_event
     
     def remove(self, literal):
         self.items.remove(literal)
         triggering_event = TriggeringEvent('-', literal)
-        return triggering_event.literal
+        return triggering_event
 
     def __str__(self):
         return '\n'.join(str(belief) for belief in self.items) 
@@ -139,16 +101,16 @@ class Event:
     def __init__(self, triggering_event, intention):
         self.triggering_event = triggering_event
         self.intention = intention
-        
+
     def __str__(self):
-        return '%s : %s' % (self.triggering_event, self.intention)
-    
+        return '%s | %s' % (self.triggering_event, self.intention)
+
 # Ações
 class Action:
     def __init__(self, agent_name, literal):
         self.agent_name = agent_name
         self.literal = literal
-        
+
     def __str__(self):
         return self.literal
 
@@ -198,6 +160,7 @@ class Plan:
         # Plans: [+|-] [event(terms)] : [context] <- [body]
         regex_plans = '^\s*([+-])(.*)\s*:\s*(.*)\s*<-\s*(.*)\s*$'
         plan_content = re.findall(regex_plans, content, re.M)
+
         if plan_content:
             plan_content = plan_content.pop()
             type_content = plan_content[0].strip()
@@ -241,19 +204,24 @@ class Plan:
         return plan_context
 
     # Corpo
-    def __plan_body(self, body_content):        
+    def __plan_body(self, body_content):
         body_content = re.split(';', body_content)
-        plan_body = []        
-        for content in body_content:           
+        plan_body = []
+        for content in body_content:
+            # [TO-DO] Melhorar... Fazer parecido com o TriggeringEvent
             # Ações do tipo .print()
             print_actions = self.__plan_body_print(content.strip())
             plan_body.extend(print_actions)
             # Ações do tipo .send()
             send_actions = self.__plan_body_send(content.strip())
             plan_body.extend(send_actions)
-            # # Outras ações
+            # Outras ações
             other_actions = self.__plan_body_other(content.strip())
             plan_body.extend(other_actions)
+            # Objetivos
+            goal = Goal(content.strip())
+            if goal.literal:
+                plan_body.append(goal)
 
         return plan_body
 
@@ -303,11 +271,7 @@ class Plan:
         return other_actions
 
 
-if __name__ == '__main__':
-    plan = Plan('+!start : true <- aloha; .print("Formas de imprimir a base de conhecimento:"); .print(); .print("").')
-    print(plan.triggering_event.type)
-    print(plan.triggering_event.content)
-    print(plan.context)
-    print(plan.body)
+TRUE_INTENTION = Plan('+!true : true <- true')
 
+if __name__ == '__main__':
     pass

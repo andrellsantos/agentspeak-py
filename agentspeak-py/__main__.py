@@ -9,14 +9,14 @@ if __name__ == '__main__':
 
     # Linux
     # file = '/home/andre/Development/Python/agentspeak-py/examples/generic/generic.maspy'
-    # file = '/home/andre/Development/Python/agentspeak-py/examples/hello-world/helloWorld.maspy'
-    # file = '/home/andre/Development/Python/agentspeak-py/examples/room/room.maspy'
-    # file = '/home/andre/Development/Python/agentspeak-py/examples/open-world/openWorld.maspy'
+#     file = '/home/andre/Development/Python/agentspeak-py/examples/hello-world/helloWorld.maspy'
+#     file = '/home/andre/Development/Python/agentspeak-py/examples/room/room.maspy'
+    file = '/home/andre/Development/Python/agentspeak-py/examples/open-world/openWorld.maspy'
     # Linux - PUC
     # file = '/home/PORTOALEGRE/13108260/DriveH/TCC/agentspeak-py/examples/generic/generic.maspy'
 
     # Windows
-    file = 'C:/Desenvolvimento/python/agentspeak-py/examples/hello-world/helloWorld.maspy'
+    # file = 'C:/Desenvolvimento/python/agentspeak-py/examples/hello-world/helloWorld.maspy'
     # file = 'C:/Desenvolvimento/python/agentspeak-py/examples/room/room.maspy'
     # file = 'C:/Desenvolvimento/python/agentspeak-py/examples/open-world/openWorld.maspy'
     

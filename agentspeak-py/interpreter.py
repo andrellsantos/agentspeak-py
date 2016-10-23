@@ -24,17 +24,17 @@ class Interpreter:
         self.agents = project.agents        
         # Define o ambiente
         self.environment = project.environment
-        
-                        
+
+
     def run(self):
         # Contador com os cilos de interpretação
         ticks = 0
         # Variável de controle para parar as iterações e finalizar o interpretador
-        wantFinish = False
+        want_finish = False
         # Realiza as iterações enquanto que o usuário permitir
-        while not wantFinish:
+        while not want_finish:
             # Pilha de ações provenientes do raciocínio dos agentes
-            actions = []        
+            actions = []
 
             # Executa o ciclo de raciocínio dos agentes
             for agent in self.agents:
@@ -46,12 +46,13 @@ class Interpreter:
             # Executa a pilha de ações no ambiente
             if actions:
                 for action in actions:
-                    self.environment.execute(action)
+                    if isinstance(action, Action):
+                        self.environment.execute(action)
             else:
-                wantFinish = True
+                want_finish = True
 
             if self.max_ticks and ticks > self.max_ticks:
-                wantFinish = True
+                want_finish = True
 
             # Incrementa o contador com os cliclos de interpretação
             ticks += 1

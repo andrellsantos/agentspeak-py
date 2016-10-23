@@ -28,9 +28,9 @@ class ParserAgent:
         # Crenças
         belief_base = BeliefBase(self.__beliefs(agent_content))
         # Objetivos
-        goals = self.__goals(agent_content)        
+        goals = self.__goals(agent_content)
         # Planos
-        plans = self.__plans(agent_content)		
+        plans = self.__plans(agent_content)
         # Agente
         self.agent = Agent(agent_name, belief_base, goals, plans)
 
@@ -57,7 +57,7 @@ class ParserAgent:
             goals.append(goal)
 
         return goals
-    
+
     # Planos
     def __plans(self, agent_content):
         plans = []

@@ -3,12 +3,9 @@
 /* Initial beliefs and rules */
 
 /* Initial goals */
-!start.
-//!start2(andre).
+!start_function.
 
 /* Plans */
-
-+!start : true <- aloha; .print("Formas de imprimir a base de conhecimento:"); .print(); .print("").
-//+!start : true <- !start2.
-
-+!start2(A) : true <- mahalo(A).
++!start_function : true <- aloha; ?start_print(true); !start_print.
++!start_print : true <- .print("Formas de imprimir a base de conhecimento:"); .print(); .print(""); !start_variable(andre).
++!start_variable(A) : true <- mahalo(A).
