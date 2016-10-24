@@ -9,7 +9,7 @@ if __name__ == '__main__':
 
     # Linux
     # file = '/home/andre/Development/Python/agentspeak-py/examples/generic/generic.maspy'
-#     file = '/home/andre/Development/Python/agentspeak-py/examples/hello-world/helloWorld.maspy'
+    # file = '/home/andre/Development/Python/agentspeak-py/examples/hello-world/helloWorld.maspy'
 #     file = '/home/andre/Development/Python/agentspeak-py/examples/room/room.maspy'
     file = '/home/andre/Development/Python/agentspeak-py/examples/open-world/openWorld.maspy'
     # Linux - PUC

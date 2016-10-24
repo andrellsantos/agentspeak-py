@@ -157,34 +157,33 @@ class Agent:
         for plan in self.__plan_library:
             unification = unify(event.triggering_event.literal, plan.triggering_event.literal, theta) 
             if unification != None:
-                if len(unification) > 0:
-                    plan = self.__substitute_unifier(unification, plan)
+                plan = self.__substitute_unifier(unification, plan)
                 relevant_plans.append(plan)
 
         return relevant_plans
     
     # Função de substituição da unificação de um plano
     def __substitute_unifier(self, unification, plan):
-        # Cria um cópia do plano
-        plan = copy.deepcopy(plan)        
-        # Realiza a substituição do evento arivador
-        plan.triggering_event = substitute(unification, plan.triggering_event.literal)
-        # Realiza a substituição do contexto
-        plan_context = []
-        for context in plan.context:
-            plan_context.append(substitute(unification, context))
-        plan.context = plan_context
-        # Realiza a substituição do corpo
-        plan_body = []
-        for body in plan.body:
-            if isinstance(body, Literal):
-                body = substitute(unification, body)
-            elif isinstance(body, Goal):
-                body.content = substitute(unification, body.content)
-                body.literal = substitute(unification, body.literal)
-            
-            plan_body.append(body)
-        plan.body = plan_body
+        if len(unification) > 0:
+            # Cria um cópia do plano
+            plan = copy.deepcopy(plan)        
+            # Realiza a substituição do evento arivador
+            plan.triggering_event = substitute(unification, plan.triggering_event.literal)
+            # Realiza a substituição do contexto
+            plan_context = []
+            for context in plan.context:
+                plan_context.append(substitute(unification, context))
+            plan.context = plan_context
+            # Realiza a substituição do corpo
+            plan_body = []
+            for body in plan.body:
+                if isinstance(body, Literal):
+                    body = substitute(unification, body)
+                elif isinstance(body, Goal):
+                    body.content = substitute(unification, body.content)
+                    body.literal = substitute(unification, body.literal)
+                plan_body.append(body)
+            plan.body = plan_body
         
         return plan
 
@@ -194,40 +193,63 @@ class Agent:
         theta = {}
         applicable_plans = []
         for plan in relevant_plans:
-            has_breaked = False
-            for context in plan.context:
-                has_unification = False
-                if has_breaked:
-                    break
-
-                if context.functor == 'true':
-                    has_unification = True
-                else:
-                    if context.functor == 'not':
-                        context = list(context.args)
-                        if context:
-                            has_unification = True
-                            context = context.pop(0)
-                            for belief in self.__belief_base.items:
-                                if unify(context, belief, theta) != None:
-                                    has_breaked = True
-                                    break
-                    else: 
-                        for belief in self.__belief_base.items:    
-                            if unify(context, belief, theta) != None:
-                                has_unification = True
-                                break
-
-            if has_unification:
+            if self.__relevant_unifier(copy.deepcopy(plan.context)):
                 applicable_plans.append(plan)
+
+#             has_breaked = False
+#             for context in plan.context:
+#                 has_unification = False
+#                 if has_breaked:
+#                     break
+#   
+#                 if context.functor == 'true':
+#                     has_unification = True
+#                 else:
+#                     if context.functor == 'not':
+#                         context = list(context.args)
+#                         if context:
+#                             has_unification = True
+#                             context = context.pop(0)
+#                             for belief in self.__belief_base.items:
+#                                 if unify(context, belief, theta) != None:
+#                                     has_breaked = True
+#                                     break
+#                     else: 
+#                         for belief in self.__belief_base.items:    
+#                             if unify(context, belief, theta) != None:
+#                                 has_unification = True
+#                                 break
+#   
+#             if has_unification:
+#                 applicable_plans.append(plan)
                 
         return applicable_plans
     
-    def __relevant_unifier(self, context):
-        if context.functor == 'true':
-            return True
+    def __unify_with_belief_base(self, content):
+        theta = {}
+        for belief in self.__belief_base.items:    
+            if unify(content, belief, theta) != None:
+                return True
+        
+        return False
+    
+    def __relevant_unifier(self, context = []):
+        if not context:
+            return False
+        if len(context) == 1:
+            context = context.pop()
+            if context.functor == 'true':
+                return True
+            if context.functor == 'not':
+                context = list(context.args)
+                ret = self.__unify_with_belief_base(context)
+                return not ret
+            
+            ret = self.__unify_with_belief_base(context)
+            return ret
         else:
-            pass
+            ret = self.__relevant_unifier(context[:1]) and self.__relevant_unifier(context[1:])
+            return ret
         
 
     # Função de seleção do plano pretendido
@@ -235,8 +257,8 @@ class Agent:
         # Escolhe um único plano aplicável do conjunto de planos aplicáveis
         applicable_plan = None
         if applicable_plans:
-            # applicable_plan = applicable_plans.pop(0)
-            applicable_plan = random.choice(applicable_plans)
+            applicable_plan = applicable_plans.pop(0)
+            # applicable_plan = random.choice(applicable_plans)
 
         return applicable_plan
 
