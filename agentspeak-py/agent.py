@@ -188,40 +188,11 @@ class Agent:
         return plan
 
     # Função de substituição para seleção dos planos relevantes
-    # [TO-DO] Dividir em uma função para obter o 'relevantUnifier'
     def __unify_context(self, relevant_plans):
-        theta = {}
         applicable_plans = []
         for plan in relevant_plans:
-            if self.__relevant_unifier(copy.deepcopy(plan.context)):
+            if self.__relevant_unifier(plan.context):
                 applicable_plans.append(plan)
-
-#             has_breaked = False
-#             for context in plan.context:
-#                 has_unification = False
-#                 if has_breaked:
-#                     break
-#   
-#                 if context.functor == 'true':
-#                     has_unification = True
-#                 else:
-#                     if context.functor == 'not':
-#                         context = list(context.args)
-#                         if context:
-#                             has_unification = True
-#                             context = context.pop(0)
-#                             for belief in self.__belief_base.items:
-#                                 if unify(context, belief, theta) != None:
-#                                     has_breaked = True
-#                                     break
-#                     else: 
-#                         for belief in self.__belief_base.items:    
-#                             if unify(context, belief, theta) != None:
-#                                 has_unification = True
-#                                 break
-#   
-#             if has_unification:
-#                 applicable_plans.append(plan)
                 
         return applicable_plans
     
@@ -237,11 +208,11 @@ class Agent:
         if not context:
             return False
         if len(context) == 1:
-            context = context.pop()
+            context = context[0]
             if context.functor == 'true':
                 return True
             if context.functor == 'not':
-                context = list(context.args)
+                context = context.args[0]
                 ret = self.__unify_with_belief_base(context)
                 return not ret
             

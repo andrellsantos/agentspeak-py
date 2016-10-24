@@ -1,8 +1,4 @@
 eclipse.preferences.version=1
-encoding//aima/python_2/logic.py=utf-8
-encoding//aima/python_2/utils.py=utf-8
-encoding//aima/python_3/logic.py=utf-8
-encoding//aima/python_3/utils.py=utf-8
 encoding/__main__.py=utf-8
 encoding/agent.py=utf-8
 encoding/agentspeak.py=utf-8

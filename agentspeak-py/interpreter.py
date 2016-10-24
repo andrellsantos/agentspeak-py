@@ -33,7 +33,7 @@ class Interpreter:
         want_finish = False
         # Realiza as iterações enquanto que o usuário permitir
         while not want_finish:
-            # Pilha de ações provenientes do raciocínio dos agentes
+            # Fila de ações provenientes do raciocínio dos agentes
             actions = []
 
             # Executa o ciclo de raciocínio dos agentes
@@ -43,7 +43,7 @@ class Interpreter:
                 if action:
                     actions.append(action)
 
-            # Executa a pilha de ações no ambiente
+            # Executa a fila de ações no ambiente
             if actions:
                 for action in actions:
                     if isinstance(action, Action):
