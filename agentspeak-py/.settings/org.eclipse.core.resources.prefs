@@ -1,4 +1,6 @@
 eclipse.preferences.version=1
+encoding//tests/test_interpreter.py=utf-8
+encoding//tests/test_performance.py=utf-8
 encoding/__main__.py=utf-8
 encoding/agent.py=utf-8
 encoding/agentspeak.py=utf-8

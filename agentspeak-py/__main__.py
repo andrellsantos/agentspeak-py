@@ -5,8 +5,7 @@ import re
 import sys
 from interpreter import *
 
-if __name__ == '__main__':
-
+def main():
     # Linux
     # file = '/home/andre/Development/Python/agentspeak-py/examples/generic/generic.maspy'
     # file = '/home/andre/Development/Python/agentspeak-py/examples/hello-world/helloWorld.maspy'
@@ -73,3 +72,6 @@ if __name__ == '__main__':
 
     interpreter = Interpreter(file, debug, metrics, max_ticks)
     interpreter.run()
+
+if __name__ == '__main__':
+    main()
