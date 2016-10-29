@@ -75,18 +75,27 @@ class Agent:
 
     def __process_messages(self, sender, type, literal):
         # Tell
+        # O agente que enviou a mensagem pretende que o agente receptor possua uma crença em que
+        # o literal da mensagem seja verdadeiro.
         if type == 'tell':
             raise 'O tipo \'tell\' está pendente de implementação na função .send()!'
         # Untell
+        # O agente que enviou a mensagem pretende que o agente receptor não possua uma crença em que
+        # o literal da mensagem seja verdadeiro.
         elif type == 'untell':
             raise 'O tipo \'untell\' está pendente de implementação na função .send()!'
         # Achieve
+        # O agente que enviou a mensagem solicita que o agente receptor tente alcançar um estado 
+        # em que o conteúdo do literal da mensagem seja verdadeiro, isto é, delegando um objetivo
+        # para o agente receptor.
         elif type == 'achieve':
             goal = Goal('!' + literal)
             triggering_event = TriggeringEvent('+', goal)
             event = Event(triggering_event, TRUE_INTENTION)
             self.__events.append(event)
         # Unachieve
+        # O agente que enviou a mensagem solicita que o agente receptor desista do objetivo de atingir
+        # um estado em que o conteúdo do literal da mensagem seja verdadeiro.
         elif type == 'unachieve':
             goal = Goal('!' + literal)
             triggering_event = TriggeringEvent('-', goal)
@@ -132,7 +141,7 @@ class Agent:
 
         # Cada literal da base de conhecimento que não está nas percepções é removido do conjunto de eventos
         remove_list = []
-        for belief in self.__belief_base.items:             
+        for belief in self.__belief_base.items:
             if belief not in perceptions:
                 remove_list.append(belief)
 
@@ -221,7 +230,6 @@ class Agent:
         else:
             ret = self.__relevant_unifier(context[:1]) and self.__relevant_unifier(context[1:])
             return ret
-        
 
     # Função de seleção do plano pretendido
     def _intended_means_selection(self, applicable_plans):
@@ -266,7 +274,7 @@ class Agent:
                             # conjunto de intenções, caso contrário, não executa os demais literias do corpo.
                             theta = {}
                             has_unification = False
-                            for belief in self.__belief_base.items:                                
+                            for belief in self.__belief_base.items:
                                 unification = unify(literal.content, belief, theta) 
                                 if unification != None:
                                     has_unification = True
@@ -277,7 +285,6 @@ class Agent:
                             else:
                                 self.__intentions.remove(intention)
                                 intention = None
-                                
                     else:
                         # Definição 15: Se a fórmula no corpo da intenção 'i' for uma ação a ser realizada
                         # pelo agente no ambiente, o interpretador atualiza o estado do ambiente com a ação
