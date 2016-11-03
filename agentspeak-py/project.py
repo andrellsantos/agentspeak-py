@@ -35,9 +35,20 @@ class Project(Mas):
             agents_name = re.split(',', agents_name)
 
             for agent_name in agents_name:
-                agent_file = '%s/%s.asl'%(file_path, agent_name)
-                parser = ParserAgent(agent_name, agent_file)
-                self.agents.append(parser.agent)
+                position_hashtag = agent_name.find('#')
+                if position_hashtag >= 0:
+                    number_instances = int(agent_name[position_hashtag+1:])
+                    agent_name = agent_name[:position_hashtag]
+                    agent_file = '%s/%s.asl' % (file_path, agent_name)
+                                    
+                    for i in range(1, number_instances+1):
+                        instance_name = '%s%s' % (agent_name, i)
+                        parser = ParserAgent(instance_name, agent_file)
+                        self.agents.append(parser.agent)
+                else:
+                    agent_file = '%s/%s.asl' % (file_path, agent_name)
+                    parser = ParserAgent(agent_name, agent_file)
+                    self.agents.append(parser.agent)
 
             # Ordena os agentes
             self.sort(self.agents)
