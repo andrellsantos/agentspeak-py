@@ -1,0 +1,5 @@
+/* Project Poster */
+poster:
+    // List of agents
+    agents = [poster]
+    environment = Poster

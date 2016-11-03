@@ -7,7 +7,7 @@ ld  = parse_literal('locked(door)')
 nld = parse_literal('~locked(door)')
 
 
-class RoomEnv(Environment):
+class Room(Environment):
     def __init__(self):
         Environment.__init__(self)
         self.add_percept(ld)

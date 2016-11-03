@@ -3,9 +3,9 @@
 
 from environment import *
 
-start_print = parse_literal('start_print(true)')
+ct = parse_literal('continue(true)')
 
-class HelloWorldEnv(Environment):
+class Poster(Environment):
     def __init__(self):
         Environment.__init__(self)
 
@@ -15,8 +15,8 @@ class HelloWorldEnv(Environment):
         getattr(self, action.functor)(list(action.args))
 
     def aloha(self, *args):
-        self.add_percept(start_print)
-        print('Aloha HelloWorldEnv!')
+        self.add_percept(ct)
+        print('Aloha Poster!')
 
     def mahalo(self, *args):
         print('Mahaloing with %s!' % ", ".join(map(str, *args)))

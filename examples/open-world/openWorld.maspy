@@ -1,6 +1,8 @@
+/* Project Open World */
 openWorld:
-    environment = 
-        OpenWorldEnv
-    
+	// Environment
+    environment = OpenWorld
+		
+    // List of agents
     agents = 
-        [openWorld]//, openWorld1, openWorld2]
+        [openWorld #3]

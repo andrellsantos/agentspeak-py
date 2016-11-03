@@ -15,7 +15,9 @@ def main():
     # file = '/home/PORTOALEGRE/13108260/DriveH/TCC/agentspeak-py/examples/generic/generic.maspy'
 
     # Windows
-    file = 'C:/Desenvolvimento/python/agentspeak-py/examples/hello-world/helloWorld.maspy'
+    # file = 'C:/Desenvolvimento/python/agentspeak-py/examples/hello-world/helloWorld.maspy'
+    # file = 'C:/Desenvolvimento/python/agentspeak-py/examples/poster/poster.maspy'
+    file = 'C:/Desenvolvimento/python/agentspeak-py/examples/print-belief-base/printBeliefBase.maspy'
     # file = 'C:/Desenvolvimento/python/agentspeak-py/examples/room/room.maspy'
     # file = 'C:/Desenvolvimento/python/agentspeak-py/examples/open-world/openWorld.maspy'
     
