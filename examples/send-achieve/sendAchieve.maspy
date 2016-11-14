@@ -1,4 +1,0 @@
-/* Project Send Achieve */
-sendAchieve:
-    // List of agents
-    agents = [boss, intern]

@@ -1,4 +1,0 @@
-Bakery(BackeryMas):
-    environment = BakeryEnv
-
-    agents = [boss, baker]

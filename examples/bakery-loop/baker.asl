@@ -1,1 +1,0 @@
-+newTask(X) <- bake(X).
