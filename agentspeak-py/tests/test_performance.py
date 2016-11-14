@@ -28,7 +28,7 @@ class PerformanceTest(unittest.TestCase):
         # FONTE: https://pymotw.com/2/subprocess/
         elapsed = []
 
-        for i in range(50):
+        for i in range(10):
             start = time.time()
             os.system('python agentspeak-py/__main__.py')
             done = time.time()
@@ -37,10 +37,10 @@ class PerformanceTest(unittest.TestCase):
             
             
         print('')
-        print('Itens: %s' % len(elapsed))
+        print('Execuções: %s' % len(elapsed))
         print('Média: %s segundos' % mean(elapsed))
         print('Desvio Padrão: %s segundos' % standard_deviation(elapsed))
-        print('Tempo de Total: %s segundos' % sum(elapsed))
+        print('Tempo Total: %s segundos' % sum(elapsed))
         
         self.assertTrue
         

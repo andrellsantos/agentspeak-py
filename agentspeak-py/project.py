@@ -9,12 +9,12 @@ from mas import *
 from parser_agent import *
 
 class Project(Mas):
-    def __init__(self, file):
-        project_file = open(file, 'r');
-        self.__load(os.path.dirname(project_file.name), project_file.read())
-        project_file.close()
+    def __init__(self, maspy):
+        project_maspy = open(maspy, 'r');
+        self.__load(os.path.dirname(project_maspy.name), project_maspy.read())
+        project_maspy.close()
 
-    def __load(self, file_path, project_content): 
+    def __load(self, maspy_path, project_content): 
         # [FERRAMENTA] https://regex101.com/#python
         # Remove o que está entre /* e */
         regex_multiple_comments = '/\*.*\*/'
@@ -39,15 +39,15 @@ class Project(Mas):
                 if position_hashtag >= 0:
                     number_instances = int(agent_name[position_hashtag+1:])
                     agent_name = agent_name[:position_hashtag]
-                    agent_file = '%s/%s.asl' % (file_path, agent_name)
+                    agent_maspy = '%s/%s.asl' % (maspy_path, agent_name)
                                     
                     for i in range(1, number_instances+1):
                         instance_name = '%s%s' % (agent_name, i)
-                        parser = ParserAgent(instance_name, agent_file)
+                        parser = ParserAgent(instance_name, agent_maspy)
                         self.agents.append(parser.agent)
                 else:
-                    agent_file = '%s/%s.asl' % (file_path, agent_name)
-                    parser = ParserAgent(agent_name, agent_file)
+                    agent_maspy = '%s/%s.asl' % (maspy_path, agent_name)
+                    parser = ParserAgent(agent_name, agent_maspy)
                     self.agents.append(parser.agent)
 
             # Ordena os agentes
@@ -61,8 +61,8 @@ class Project(Mas):
         if environment_content:
             environment_content = environment_content[0]
             # Carrega o ambiente personalizado
-            environment_file = '%s/%s.py' % (file_path, environment_content)
-            module = imp.load_source(environment_content, environment_file)
+            environment_maspy = '%s/%s.py' % (maspy_path, environment_content)
+            module = imp.load_source(environment_content, environment_maspy)
             EnvironmentClass = getattr(module, environment_content)
             self.environment = EnvironmentClass()    
 

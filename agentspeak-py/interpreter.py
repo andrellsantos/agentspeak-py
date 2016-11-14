@@ -14,12 +14,11 @@ from environment import *
 from project import *
 
 class Interpreter:
-    def __init__(self, file, debug = False, metrics = False, max_ticks = None):
+    def __init__(self, maspy, debug = False, max_ticks = None):
         self.debug = debug
-        self.metrics = metrics
         self.max_ticks = max_ticks
         # Carrega as informações do projeto
-        project = Project(file)        
+        project = Project(maspy)        
         # Define a lista dos agentes
         self.agents = project.agents        
         # Define o ambiente
@@ -48,6 +47,7 @@ class Interpreter:
                 for action in actions:
                     if isinstance(action, Action):
                         self.environment.execute(action)
+            # Finaliza o interpretação se não existir ação
             else:
                 want_finish = True
 

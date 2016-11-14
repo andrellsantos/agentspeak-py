@@ -6,5 +6,5 @@
 !start.
 
 /* Plans */
-+!start : true <- aloha; ?continue(true); !run(poster).
++!start : true <- aloha; ?continue(execute); !run(poster).
 +!run(A) : true <- mahalo(A).

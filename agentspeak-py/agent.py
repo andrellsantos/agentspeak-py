@@ -225,11 +225,11 @@ class Agent:
                 ret = self.__unify_with_belief_base(context)
                 return not ret
             
-            ret = self.__unify_with_belief_base(context)
-            return ret
+            relevant_unifier = self.__unify_with_belief_base(context)
+            return relevant_unifier
         else:
-            ret = self.__relevant_unifier(context[:1]) and self.__relevant_unifier(context[1:])
-            return ret
+            relevant_unifier = self.__relevant_unifier(context[:1]) and self.__relevant_unifier(context[1:])
+            return relevant_unifier
 
     # Função de seleção do plano pretendido
     def _intended_means_selection(self, applicable_plans):

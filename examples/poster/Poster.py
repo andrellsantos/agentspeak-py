@@ -3,7 +3,7 @@
 
 from environment import *
 
-ct = parse_literal('continue(true)')
+ct = parse_literal('continue(execute)')
 
 class Poster(Environment):
     def __init__(self):
