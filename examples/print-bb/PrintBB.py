@@ -5,7 +5,7 @@ from environment import *
 
 st = parse_literal('show(true)')
 
-class PrintBeliefBase(Environment):
+class PrintBB(Environment):
     def __init__(self):
         Environment.__init__(self)
         self.add_percept(st)

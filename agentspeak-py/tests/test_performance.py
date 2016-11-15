@@ -28,9 +28,9 @@ class PerformanceTest(unittest.TestCase):
         # FONTE: https://pymotw.com/2/subprocess/
         elapsed = []
 
-        for i in range(10):
+        for i in range(100):
             start = time.time()
-            os.system('python agentspeak-py/__main__.py')
+            os.system('python agentspeak-py/__main__.py maspy ../examples/print-var/printVar.maspy')
             done = time.time()
             difference = done - start        
             elapsed.append(difference)

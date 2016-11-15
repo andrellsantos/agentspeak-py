@@ -6,5 +6,5 @@
 !start.
 
 /* Plans */
-+!start : true <- aloha; ?continue(execute); !run(poster).
++!start : true <- aloha; ?continue(execute); !run(agentspeak).
 +!run(A) : true <- mahalo(A).

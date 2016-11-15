@@ -1,6 +1,6 @@
 /* Project Print Belief Base */
-printBeliefBase:
+printBB:
     // List of agents
-    agents = [printBeliefBase]
+    agents = [printBB]
 	
-	environment = PrintBeliefBase
+	environment = PrintBB

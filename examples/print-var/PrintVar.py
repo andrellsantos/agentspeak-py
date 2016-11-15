@@ -5,7 +5,7 @@ from environment import *
 
 ct = parse_literal('continue(execute)')
 
-class Poster(Environment):
+class PrintVar(Environment):
     def __init__(self):
         Environment.__init__(self)
 
@@ -16,7 +16,7 @@ class Poster(Environment):
 
     def aloha(self, *args):
         self.add_percept(ct)
-        print('Aloha Poster!')
+        print('Aloha printVar!')
 
     def mahalo(self, *args):
         print('Mahaloing with %s!' % ", ".join(map(str, *args)))

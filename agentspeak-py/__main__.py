@@ -6,7 +6,7 @@ import sys
 from interpreter import *
 
 def main():
-    HELP = """Agentspeak(py) maspy [debug] [max_ticks integer]
+    HELP = """Agentspeak(Py) maspy [debug] [max_ticks integer]
         maspy     - Arquivo maspy
         debug     - Ativar modo de deburação, padrão: desabilitado
         max_ticks - Executa um número inteiro de ciclos, padrão: ilimitado"""

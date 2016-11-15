@@ -18,8 +18,6 @@ class OpenWorld(Environment):
         self.add_percept(pb)
         self.add_percept(npa)
         self.add_percept(npb)
-
-        self.max_ticks = 0
             
     def execute_action(self, agent_name, action):
         self.clear_perceptions()
