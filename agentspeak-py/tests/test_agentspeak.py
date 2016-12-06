@@ -9,23 +9,40 @@ from agentspeak import *
 class AgentSpeakTest(unittest.TestCase):
     # Crenças
     def test_belief(self):
-        content = 'name(term)'
-        belief = Belief(content)
-        self.assertEqual(content, str(belief))
+        belief = Belief('name(term)')
+
+        self.assertEqual('name(term)', str(belief))
 
     # Objetivos de Realização
     def test_goal_achievement(self):
-        self.assertTrue
+        goal = Goal('!name(term)')
+        expected = ['!', 'name(term)', '!name(term)']
+        result = [goal.type, str(goal.content), str(goal.literal)]
+
+        self.assertListEqual(expected, result)
 
     def test_goal_achievement_atom(self):
-        self.assertTrue
+        goal = Goal( '!name')
+        expected = ['!', 'name',  '!name']
+        result = [goal.type, str(goal.content), str(goal.literal)]
+
+        self.assertListEqual(expected, result)
     
     # Objetivos de Teste
     def test_goal_test(self):
-        self.assertTrue
+        goal = Goal('?name(term)')
+        expected = ['?', 'name(term)', '?name(term)']
+        result = [goal.type, str(goal.content), str(goal.literal)]
+
+        self.assertListEqual(expected, result)
 
     def test_goal_test_atom(self):
-        self.assertTrue
+        content = '?name'
+        goal = Goal(content)
+        expected = ['?', 'name', content]
+        result = [goal.type, str(goal.content), str(goal.literal)]
+
+        self.assertListEqual(expected, result)
 
     # Eventos ativadores do plano - Podem ser crenças ou objetivos
     def test_triggering_event(self):
