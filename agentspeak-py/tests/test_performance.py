@@ -35,7 +35,7 @@ class PerformanceTest(unittest.TestCase):
             elapsed.append(difference)
 
         mean_value =  mean(elapsed)
-        self.assertLess(mean_value, 0.065)
+        self.assertLess(mean_value, 0.1)
 
 def main():
     unittest.main()
