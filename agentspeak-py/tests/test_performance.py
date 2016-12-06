@@ -43,7 +43,7 @@ class PerformanceTest(unittest.TestCase):
         # print('Tempo Total: %s segundos' % sum(elapsed))
 
         mean_value =  mean(elapsed)
-        self.assertLess(mean_value, 0.02)
+        self.assertLess(mean_value, 0.065)
 
         # FONTE: http://jason.sourceforge.net/faq/#_how_to_run_my_application_without_jason_ide
         # Para o exemplo Room.maspy, criar no ambiente uma variável de controle que, com 100 interações, não continua.
