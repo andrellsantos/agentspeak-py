@@ -37,7 +37,7 @@ class Interpreter:
 
             # Executa o ciclo de raciocínio dos agentes
             for agent in self.agents:
-                action = agent.run(self.environment.perceptions, self.environment.message_wall)
+                action = agent.run(self.environment.perceptions, self.environment.messages)
                 # Caso o agente queria executar uma ação no ambiente, adiciona na pilha de ações
                 if action:
                     actions.append(action)

@@ -9,7 +9,7 @@ class Environment:
     def __init__(self):
         # Percepções do ambiente
         self.perceptions = []
-        self.message_wall = {}
+        self.messages = {}
     
     # Executa as ações no ambiente
     def execute(self, action):
@@ -28,12 +28,12 @@ class Environment:
     def __print(self, agent_name, content):
         print('[%s] %s' % (agent_name, content))
 
-    # Atualiza o quadro de mensagens dos agentes
+    # Atualiza as mensagens dos agentes
     def __send(self, destination, message):
-        messages = self.message_wall.get(destination, [])
+        messages = self.messages.get(destination, [])
         messages.append(message)
         
-        self.message_wall[destination] = messages
+        self.messages[destination] = messages
 
     # Método que será sobrescrito pela classe personalizada de ambiente
     def execute_action(self, agent_name, action):

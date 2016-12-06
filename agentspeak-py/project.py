@@ -40,7 +40,8 @@ class Project(Mas):
                     number_instances = int(agent_name[position_hashtag+1:])
                     agent_name = agent_name[:position_hashtag]
                     agent_maspy = '%s/%s.asl' % (maspy_path, agent_name)
-                                    
+                     
+                    # [TO-DO] Melhorar...
                     for i in range(1, number_instances+1):
                         instance_name = '%s%s' % (agent_name, i)
                         parser = ParserAgent(instance_name, agent_maspy)

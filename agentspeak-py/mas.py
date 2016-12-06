@@ -7,9 +7,6 @@ class Mas:
     def __init__(self):
         pass
 
-    def getKey(item):
-        return item.name
-
     def sort(self, agents):
         # Mantem na ordem do arquivo maspy
         pass

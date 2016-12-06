@@ -22,9 +22,9 @@ class Agent:
         self.__messages = []
         self.__intentions = []
 
-    def run(self, perceptions = [], message_wall = {}):
+    def run(self, perceptions = [], messages = {}):
         # Função de verificação de mensagens
-        self.__check_message_wall(message_wall)
+        self.__check_messages(messages)
         # Função de revisão de crenças (BRF)
         self.__belief_revision_function(perceptions)
 
@@ -61,8 +61,8 @@ class Agent:
         return intention
 
     # Função de verificação de mensagens
-    def __check_message_wall(self, message_wall):
-        self.__messages.extend(message_wall.pop(self.name, []))
+    def __check_messages(self, messages):
+        self.__messages.extend(messages.pop(self.name, []))
 
         # Processa as mensagens recebidas
         # [TO-DO] Digamos que eu tenha diversas mensagens para um agente.. eu processo tudo no mesmo
@@ -78,12 +78,12 @@ class Agent:
         # O agente que enviou a mensagem pretende que o agente receptor possua uma crença em que
         # o literal da mensagem seja verdadeiro.
         if type == 'tell':
-            raise 'O tipo \'tell\' está pendente de implementação na função .send()!'
+            self.__belief_base.add(literal)
         # Untell
         # O agente que enviou a mensagem pretende que o agente receptor não possua uma crença em que
         # o literal da mensagem seja verdadeiro.
         elif type == 'untell':
-            raise 'O tipo \'untell\' está pendente de implementação na função .send()!'
+            self.__belief_base.remove(literal)
         # Achieve
         # O agente que enviou a mensagem solicita que o agente receptor tente alcançar um estado 
         # em que o conteúdo do literal da mensagem seja verdadeiro, isto é, delegando um objetivo
@@ -207,12 +207,12 @@ class Agent:
     
     def __unify_with_belief_base(self, content):
         theta = {}
-        for belief in self.__belief_base.items:    
+        for belief in self.__belief_base.items:
             if unify(content, belief, theta) != None:
                 return True
-        
+
         return False
-    
+
     def __relevant_unifier(self, context = []):
         if not context:
             return False
