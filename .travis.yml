@@ -1,5 +1,6 @@
 language: python
 python:
+  # - "2.6"
   - "2.7"
   - "3.2"
   - "3.3"
@@ -10,5 +11,13 @@ python:
 # command to run tests
 # script: nosetests
 script:
+  - python agentspeak-py/tests/test_agent.py 
   - python agentspeak-py/tests/test_agentspeak.py 
+  - python agentspeak-py/tests/test_environment.py 
+  - python agentspeak-py/tests/test_interpreter.py 
+  - python agentspeak-py/tests/test_mas.py 
+  - python agentspeak-py/tests/test_parser_agent.py
+  - python agentspeak-py/tests/test_performance.py
+  - python agentspeak-py/tests/test_project.py
+  - python agentspeak-py/tests/test_unifier.py    
  
