@@ -4,7 +4,7 @@
 import unittest
 
 class InterpreterTest(unittest.TestCase):
-    def test_agentspeak_py(self):
+    def test_interpreter(self):
         self.assertTrue
 
 def main():

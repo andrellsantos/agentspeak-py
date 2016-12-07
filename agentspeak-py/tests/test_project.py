@@ -4,7 +4,7 @@
 import unittest
 
 class ProjectTest(unittest.TestCase):
-    def test_agentspeak_py(self):
+    def test_project(self):
         self.assertTrue
 
 def main():

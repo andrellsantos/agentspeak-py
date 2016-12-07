@@ -38,8 +38,8 @@ class AgentSpeakTest(unittest.TestCase):
 
     def test_goal_test_atom(self):
         content = '?name'
-        goal = Goal(content)
-        expected = ['?', 'name', content]
+        goal = Goal('?name')
+        expected = ['?', 'name', '?name']
         result = [goal.type, str(goal.content), str(goal.literal)]
 
         self.assertListEqual(expected, result)

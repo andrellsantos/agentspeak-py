@@ -4,7 +4,7 @@
 import unittest
 
 class MasTest(unittest.TestCase):
-    def test_agentspeak_py(self):
+    def test_mas(self):
         self.assertTrue
 
 def main():

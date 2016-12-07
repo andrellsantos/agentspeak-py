@@ -4,7 +4,7 @@
 import unittest
 
 class ParserAgentTest(unittest.TestCase):
-    def test_agentspeak_py(self):
+    def test_parser_agent(self):
         self.assertTrue
 
 def main():

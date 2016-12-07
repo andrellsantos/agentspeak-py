@@ -4,7 +4,7 @@
 import unittest
 
 class UnifierTest(unittest.TestCase):
-    def test_agentspeak_py(self):
+    def test_unifier(self):
         self.assertTrue
 
 def main():
